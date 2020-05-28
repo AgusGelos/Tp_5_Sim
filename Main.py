@@ -135,7 +135,7 @@ def generar_miles(cantidad_dias):
                 t1.cola_autos = 0
                 t1.cola_mionca = 0
                 t1.capacidad = 10
-                if t1.localizacion == "Continente":
+                if t1.localizacion == "Continente" & trans_en_uso == "T1":
                     acum_auto += t1.cola_autos
                     acum_mionca += t2.cola_mionca
                     if cola_autos > 0:
@@ -154,7 +154,7 @@ def generar_miles(cantidad_dias):
                         t1.estado = "Libre"
 
             elif opcion == hora_descarga_t2:                            #Descarga T2
-                if t2.localizacion == "Continente":
+                if t2.localizacion == "Continente" & trans_en_uso == "T2":
                     acum_auto += t1.cola_autos
                     acum_mionca += t2.cola_mionca
                     if cola_autos > 0:
