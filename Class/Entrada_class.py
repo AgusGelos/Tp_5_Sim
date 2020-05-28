@@ -1,17 +1,16 @@
 class Entrada:
     def __init__(self, evento, dia, reloj,
                  #Llegada continente
-                 rnd_llegada_auto_cont, prox_llegada_auto_cont,rnd_llegada_mionca_cont, prox_llegada_mionca_cont, tipo_vehiculo_cont,flag_espera_auto_cont, flag_espera_mionca_cont,
+                 rnd_llegada_auto_cont, prox_llegada_auto_cont,rnd_llegada_mionca_cont, prox_llegada_mionca_cont,
                  #Colas cont
                  cola_autos_cont, cola_mionca_cont,
                  #Colas Max
                  cola_max_auto_cont, cola_max_mionca_cont,
                  #Flags Espera a mañana cont
-                 flag_espera_man_auto_cont, flag_espera_man_mionca_cont,
                  cola_esp_man_auto, cola_esp_man_mionca,cola_esp_man_auto_acum,
                  cola_esp_man_mionca_acum,cola_esp_man_auto_prom,cola_esp_man_mionca_prom,
                  #Carga cont
-                 flag_esta_cargando,
+
                  rnd_carga_vehiculo, tiempo_carga,tiempo_final, t1,t2, acum_paso_auto, acum_paso_mionca,
                  prom_paso_auto,prom_paso_mionca,
                  ###############Isla####################
@@ -39,9 +38,9 @@ class Entrada:
         self.prox_llegada_auto_cont = prox_llegada_auto_cont
         self.rnd_llegada_mionca_cont = rnd_llegada_mionca_cont
         self.prox_llegada_mionca_cont = prox_llegada_mionca_cont
-        self.tipo_vehiculo_cont= tipo_vehiculo_cont
-        self.flag_espera_auto_cont = flag_espera_auto_cont
-        self.flag_espera_mionca_cont = flag_espera_mionca_cont
+        #self.tipo_vehiculo_cont= tipo_vehiculo_cont
+        #self.flag_espera_auto_cont = flag_espera_auto_cont
+        #self.flag_espera_mionca_cont = flag_espera_mionca_cont
         #Colas diarias cont
         self.cola_autos_cont = cola_autos_cont
         self.cola_mionca_cont = cola_mionca_cont
