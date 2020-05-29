@@ -29,13 +29,16 @@ def generar_miles(cantidad_dias):
         rnd_llegada_mionca_cont = random.uniform(0, 1)
         prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.28, 0.38)
         trans_en_uso = "T1"
-        hora_descarga_t1, hora_descarga_t2 = 9999,9999
+        hora_descarga_t1, hora_descarga_t2 = 999,999
         dia = 1
         siguen_llegando_autos = True
         siguen_llegando_mionca = True
         fin_cargan_vehic_cont = 999
-        primer = True
-        #Establecer estados de Trans a valores iniciales o mantenimiento
+        primero = False
+        ya_pase = True
+
+
+        ####################### CHEKAR estados de Trans a valores iniciales o mantenimiento ######################################
         if i == t1.mantenimiento:
             t1.estado = "Mantenimiento"
             t1.mantenimiento += 10
@@ -53,7 +56,7 @@ def generar_miles(cantidad_dias):
             t2.hora_partida = 10
             hora_fin_matenimiento = 9999999
 
-        ##Establecer el valor de las colas
+        ############################## Establecer el valor de las colas ACUMULADAS ##############################################
         if i == 0:
             cola_autos = 0
             cola_mionca = 0
@@ -64,15 +67,19 @@ def generar_miles(cantidad_dias):
             acum_mionca = tabla_completa[-1][-1].acum_paso_mionca
 
 
-#################################################################   Antes de las 8       ###################################################
+        #########################################################   CICLO     ###################################################
         while reloj != 20:
+            paso = True
             cola_esp_man_auto = 0
             cola_esp_man_mionca = 0
+            cola_esp_man_mionca_acum= 0
+            cola_esp_man_auto_acum = 0
             t_fin_cargan_vehic_cont = 0
             rnd_carga = 0
             rnd_llegada_auto_cont = 0
             rnd_llegada_mionca_cont = 0
 
+            ############################################## COLA DE AYER ##########################################
 
             if (len(tabla_dia) != 0) and reloj == 7:
                 cola_autos = tabla_dia[dia-2].cola_esp_man_auto
@@ -85,7 +92,7 @@ def generar_miles(cantidad_dias):
                     rnd_carga = random.uniform(0, 1)
                     t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.05, 0.082)
 
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.05, 0.082)
+                    fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
 
                 elif cola_autos > 0:
                     t1.estado = "Cargando"
@@ -93,14 +100,14 @@ def generar_miles(cantidad_dias):
                     t1.cola_autos += 1
                     rnd_carga = random.uniform(0, 1)
                     t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
+                    fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
                 else:
                     t1.estado = "Libre"
                     fin_cargan_vehic_cont = 999
 
             ############################################ Primer Omnibus ########################################
 
-            if (reloj < 7.5) and min(fin_cargan_vehic_cont,prox_llegada_mionca_cont) == prox_llegada_mionca_cont:
+            if (reloj < 7.5) and min(fin_cargan_vehic_cont,prox_llegada_mionca_cont) == prox_llegada_mionca_cont and prox_llegada_mionca_cont<7.5:
                 evento = "Llegada Camión/Omnibus al Continente"
                 reloj = prox_llegada_mionca_cont
                 rnd_llegada_mionca_cont = random.uniform(0,1)
@@ -109,18 +116,21 @@ def generar_miles(cantidad_dias):
                 if t1.estado == "Libre" :
                     t1.estado = "Cargando"
                     t1.capacidad -= 2
-                    t1.cola_mionca+=1
+                    t1.cola_mionca += 1
                     rnd_carga = random.uniform(0,1)
                     t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga,0.05,0.082)
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga,0.05,0.082)
+                    fin_cargan_vehic_cont = t_fin_cargan_vehic_cont + reloj
                 else:
                     cola_mionca += 1
 
+                paso = False
 
 
 
-            #Primera llegada de un auto
-            if (prox_llegada_mionca_cont >= 7.5) and (prox_llegada_auto_cont == 999) and len(tabla_dia)>2 :
+
+
+            ########################################  Primera llegada de un auto ########################################################################
+            if (prox_llegada_mionca_cont >= 7.5) and (prox_llegada_auto_cont == 999) and len(tabla_dia)>2 and prox_llegada_auto_cont >= 7.5 and ya_pase:
                 reloj = 7.5
                 evento = "Llegada Auto Continente"
                 rnd_llegada_auto_cont = random.uniform(0,1)
@@ -131,297 +141,382 @@ def generar_miles(cantidad_dias):
                     t1.cola_autos += 1
                     rnd_carga = random.uniform(0, 1)
                     t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
+                    fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
                 else:
                     cola_autos += 1
 
+                paso = False
+                ya_pase = False
+
+
+            ########################################## CHEQUEO DE CAPACIDAD ####################################################
             if trans_en_uso == "T1" and t1.capacidad == 0:
-                t1.hora_partida = reloj
-            if trans_en_uso == "T2" and t1.capacidad == 0:
-                t2.hora_partida = reloj
+                t1.hora_partida = reloj+0.01
+            if trans_en_uso == "T2" and t2.capacidad == 0:
+                t2.hora_partida = reloj+0.01
 
-            opcion = min(prox_llegada_auto_cont,prox_llegada_mionca_cont,fin_cargan_vehic_cont, t1.hora_partida,
-                         t2.hora_partida,t1.hora_llegada,t2.hora_llegada, hora_descarga_t1, hora_descarga_t2,20)
+            if primero and paso:
+                ########################################## OPCIÓN DE MINIMO ########################################################
 
-            ###########################################Curso normal##################################################
-            if opcion == t1.hora_llegada:
-                evento = "Llegada T1 a Continente"
-                acum_auto += t1.cola_autos
-                acum_mionca += t1.cola_mionca
-                #Llegada de ferry al continente
-                if t1.puerto_salida == "Isla":
-                    reloj = t1.hora_llegada
-                    hora_descarga_t1 = reloj
-                    t1.estado = "Descargando"
-                    t1.localizacion = "Continente"
-                    for i in range(len(t1.cola_autos)):
-                        hora_descarga_t1 += random.uniform(0.0077,0.024)
-                    for i in range(len(t1.cola_mionca)):
-                        hora_descarga_t1 += random.uniform(0.024,0.041)
+                opcion = min(prox_llegada_auto_cont,prox_llegada_mionca_cont,fin_cargan_vehic_cont, t1.hora_partida,
+                             t2.hora_partida,t1.hora_llegada,t2.hora_llegada, hora_descarga_t1, hora_descarga_t2,20)
 
-                    if t2.localizacion != "Continente":
-                        trans_en_uso = "T1"
+                ########################################## Curso normal ##################################################
 
-                t1.hora_llegada = 999
+                #############Llegada de ferry 1 al continente###########
+                if opcion == t1.hora_llegada:
+                    acum_auto += t1.cola_autos
+                    acum_mionca += t1.cola_mionca
 
-            elif opcion == t2.hora_llegada:             #Llega t2 al contintente
-                evento = "Llegada de T2 al continente"
+                    if t1.puerto_salida == "Isla":
+                        evento = "Llegada T1 a Continente"
+                        reloj = t1.hora_llegada
 
-                acum_auto += t2.cola_autos
-                acum_mionca += t2.cola_mionca
-                if t2.puerto_salida == "Isla":
-                    reloj = t2.hora_llegada
-                    hora_descarga_t2 = reloj
-                    t2.estado = "Descargando"
-                    t2.localizacion = "Continente"
-                    for i in range(len(t2.cola_autos)):
-                        hora_descarga_t2 += random.uniform(0.0077, 0.024)
-                    for i in range(len(t2.cola_mionca)):
-                        hora_descarga_t2 += random.uniform(0.024, 0.041)
+                        hora_descarga_t1 = reloj
+                        t1.estado = "Descargando"
+                        t1.localizacion = "Continente"
+                        for i in range(t1.cola_autos):
+                            hora_descarga_t1 += random.uniform(0.0077,0.024)
+                        for i in range(t1.cola_mionca):
+                            hora_descarga_t1 += random.uniform(0.024,0.041)
 
-                    if t1.localizacion != "Continente":
-                        trans_en_uso = "T2"
-                t2.hora_llegada = 999
-
-            elif opcion == hora_descarga_t1:            #Descarga T1
-                evento = "Fin de descarga T1 en Contintente"
-                t1.cola_autos = 0
-                t1.cola_mionca = 0
-                t1.capacidad = 10
-                if t1.localizacion == "Continente" and trans_en_uso == "T1":
-                    if cola_mionca > 0:
-                        t1.estado = "Cargando"
-                        t1.capacidad -= 2
-                        t1.cola_mionca += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont= funcion_uniforme(rnd_carga, 0.05, 0.082)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.05, 0.082)
-
-                    elif cola_autos > 0:
-                        t1.estado = "Cargando"
-                        t1.capacidad -= 1
-                        t1.cola_autos +=1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
+                        if t2.localizacion != "Continente":
+                            trans_en_uso = "T1"
                     else:
+                        evento = "Llegada T1 a Isla"
+                        reloj = t1.hora_llegada
+                        hora_descarga_t1 = reloj
+                        t1.estado = "Descargando"
+                        t1.localizacion = "Isla"
+                        for i in range(t1.cola_autos):
+                            hora_descarga_t1 += random.uniform(0.0077, 0.024)
+                        for i in range(t1.cola_mionca):
+                            hora_descarga_t1 += random.uniform(0.024, 0.041)
+                        if t2.localizacion != "Isla":
+                            trans_en_uso_isla = "T1"
+                    t1.hora_llegada = 999
+
+
+
+
+                #############Llegada de ferry 2 al continente###########
+                elif opcion == t2.hora_llegada:
+                    acum_auto += t2.cola_autos
+                    acum_mionca += t2.cola_mionca
+                    if t2.puerto_salida == "Isla":
+                        evento = "Llegada de T2 al continente"
+                        reloj = t2.hora_llegada
+                        hora_descarga_t2 = reloj
+                        t2.estado = "Descargando"
+                        t2.localizacion = "Continente"
+                        for i in range(t2.cola_autos):
+                            hora_descarga_t2 += random.uniform(0.0077, 0.024)
+                        for i in range(t2.cola_mionca):
+                            hora_descarga_t2 += random.uniform(0.024, 0.041)
+
+                        if t1.localizacion != "Continente":
+                            trans_en_uso = "T2"
+                    else:                                           ##################################### Llegada del Ferry ala ISLA #################################
+                        evento = "Llegada T2 a Isla"
+                        reloj = t2.hora_llegada
+                        hora_descarga_t2 = reloj
+                        t2.estado = "Descargando"
+                        t2.localizacion = "Isla"
+                        for i in range(t2.cola_autos):
+                            hora_descarga_t2 += random.uniform(0.0077, 0.024)
+                        for i in range(t2.cola_mionca):
+                            hora_descarga_t2 += random.uniform(0.024, 0.041)
+                        if t1.localizacion != "Isla":
+                            trans_en_uso_isla = "T1"
+                    t2.hora_llegada = 999
+
+                #################Fin Descarga T1 ###########################
+                elif opcion == hora_descarga_t1:
+                    evento = "Fin de descarga T1 en Contintente"
+                    reloj = hora_descarga_t1
+                    hora_descarga_t1 = 999
+                    t1.cola_autos = 0
+                    t1.cola_mionca = 0
+                    t1.capacidad = 10
+                    t1.hora_partida = reloj + 1
+                    if t1.localizacion == "Continente" and trans_en_uso == "T1":
+                        if cola_mionca > 0:
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 2
+                            t1.cola_mionca += 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont= funcion_uniforme(rnd_carga, 0.05, 0.082)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif cola_autos > 0:
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 1
+                            t1.cola_autos +=1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+                        else:
+                            t1.estado = "Libre"
+                            fin_cargan_vehic_cont = 999
+
+                ######################## FIN Descarga T2 ######################################
+                elif opcion == hora_descarga_t2:
+                    evento = "Fin de descarga T2 en Continente"
+                    reloj = hora_descarga_t2
+                    hora_descarga_t2 = 999
+                    t2.cola_autos = 0
+                    t2.cola_mionca = 0
+                    t2.capacidad = 20
+                    t2.hora_partida = reloj + 1
+
+                    if t2.localizacion == "Continente" and trans_en_uso == "T2":
+                        if cola_mionca > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 2
+                            t2.cola_mionca += 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif cola_autos > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 1
+                            t2.cola_autos += 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+                        else:
+                            t2.estado = "Libre"
+                            fin_cargan_vehic_cont = 999
+
+                ################################################### FIN DE CARGA VEhÍCULO CONT ########################################################
+
+                elif opcion == fin_cargan_vehic_cont:
+                    #Fin Carga de Vehículo
+                    evento = "Fin de Carga Vehículo Continente"
+                    reloj = fin_cargan_vehic_cont
+                    fin_cargan_vehic_cont = 999
+                    if trans_en_uso == "T1" and t1.capacidad == 0:
                         t1.estado = "Libre"
-                        fin_cargan_vehic_cont = 999
+                        print("Cargamos T2")
+                        t1.hora_partida = reloj +0.01
 
-            elif opcion == hora_descarga_t2: #Descarga T2
-                evento = "Fin de descarga T2 en Continente"
-                t2.cola_autos = 0
-                t2.cola_mionca = 0
-                t2.capacidad = 20
-
-                if t2.localizacion == "Continente" and trans_en_uso == "T2":
-                    if cola_mionca > 0:
-                        t2.estado = "Cargando"
-                        t2.capacidad -= 2
-                        t2.cola_mionca += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
-
-                    elif cola_autos > 0:
-                        t2.estado = "Cargando"
-                        t2.capacidad -= 1
-                        t2.cola_autos += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
-                    else:
+                    elif trans_en_uso == "T2" and t2.capacidad == 0:
                         t2.estado = "Libre"
-                        fin_cargan_vehic_cont = 999
+                        t2.hora_partida = reloj + 0.01
 
-            elif opcion == fin_cargan_vehic_cont:
-                #Fin Carga de Vehículo
+                    elif t1.estado == "Cargando" and t1.localizacion == "Continente" and cola_autos == 0 and cola_mionca == 0:
+                        t1.estado = "Libre"
 
-                reloj = fin_cargan_vehic_cont
-                if trans_en_uso == "T1" and t1.capacidad == 0:
-                    t1.estado = "Libre"
-                    t1.hora_partida = fin_cargan_vehic_cont +0.01
-                if trans_en_uso == "T2" and t2.capacidad == 0:
-                    t2.estado = "Libre"
-                    t2.hora_partida = fin_cargan_vehic_cont + 0.01
-                if t1.estado == "Cargando" and t1.localizacion == "Continente" and cola_autos == 0 and cola_mionca == 0:
-                    t1.estado == "Libre"
-                    fin_cargan_vehic_cont = 999
-                elif t2.estado == "Cargando" and t2.localizacion == "Continente" and cola_autos == 0 and cola_mionca == 0:
-                    t2.estado == "Libre"
-                    fin_cargan_vehic_cont = 999
 
-                else:
-                    if trans_en_uso == "T1" and cola_mionca != 0 and t1.capacidad > 2:
-                        # Cargo un camión
-                        evento = "Fin de Carga Camión Continente"
-                        t1.estado == "Cargando"
-                        t1.capacidad -= 2
-                        t1.cola_mionca += 1
+                    elif t2.estado == "Cargando" and t2.localizacion == "Continente" and cola_autos == 0 and cola_mionca == 0:
+                        t2.estado = "Libre"
+
+
+                    else:
+                        if trans_en_uso == "T1" and cola_mionca != 0 and t1.capacidad > 2:
+                            # Cargo un camión
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 2
+                            t1.cola_mionca += 1
+                            cola_mionca -=1
+
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.05, 0.082)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif trans_en_uso == "T1" and cola_autos != 0 and t1.capacidad > 1:
+                            #Cargar un auto
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 1
+                            t1.cola_autos += 1
+                            cola_autos-= 1
+
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif trans_en_uso == "T2" and cola_mionca != 0 and t2.capacidad > 2:
+                            # Cargo un camión
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 2
+                            t2.cola_mionca += 1
+                            cola_mionca -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.05,0.082)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif trans_en_uso == "T2" and cola_autos != 0 and t2.capacidad > 1:
+                            # Cargar un auto
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 1
+                            t2.cola_autos += 1
+                            cola_autos -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+                        else:
+                            print("Error En las definiciones de arriba")
+
+            ########################## LLEGADA DE AUTO AL CONTINENTE ##############################
+                elif opcion == prox_llegada_auto_cont:
+                    ## Llega un auto
+                    evento = "Llegada de Auto a Continente"
+                    reloj = prox_llegada_auto_cont
+                    if reloj <=12 and siguen_llegando_autos:
+                        rnd_llegada_auto_cont = random.uniform(0,1)
+                        prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont,0.167,0.33)
+                    elif reloj <=19 and siguen_llegando_autos:
+                        rnd_llegada_auto_cont = random.uniform(0, 1)
+                        prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont, 0.417, 0.583)
+                    else:
+                        siguen_llegando_autos = False
+                        prox_llegada_auto_cont = 999
+                    ##
+
+                    if (t1.localizacion != "Continente" and t2.localizacion != "Continente") or (t1.localizacion == "Continente" and t1.estado == "Cargando" )\
+                            or(t2.localizacion == "Continente" and t2.estado == "Cargando" ) \
+                            or (trans_en_uso == "T1" and t1.capacidad < 1) \
+                            or (trans_en_uso == "T2" and t2.capacidad < 1):
+                        cola_autos += 1
+                    else:
+                        if (trans_en_uso == "T1") and t1.estado == "Libre" :
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 1
+                            t1.cola_autos += 1
+                        elif trans_en_uso == "T2" and t2.estado == "Libre":
+                            t2.estado = "Cargando"
+                            t2.capacidad -=1
+                            t2.cola_autos += 1
+
                         rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.05, 0.082)
+                        t_fin_cargan_vehic_cont = + funcion_uniforme(rnd_carga, 0.017, 0.049)
+                        fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        try:
+                            if (tabla_dia[dia-2].cola_max_auto_cont)<cola_autos:
+                                cola_max_auto = cola_autos
+                            else:
+                                cola_max_auto = tabla_dia[dia-2].cola_max_auto_cont
+                        except:
+                            cola_max_auto = cola_autos
+
+                ################################### LLEGADA DE CAMION ####################################
+
+                elif opcion == prox_llegada_mionca_cont:
+                    evento = "Llegada de Camión/Ómnibus a Continente"
+                    reloj = prox_llegada_mionca_cont
+                    if reloj <= 11 and siguen_llegando_mionca:
+                        rnd_llegada_mionca_cont = random.uniform(0, 1)
+                        prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.314, 0.346)
+                    elif reloj <= 19.5 and siguen_llegando_mionca:
+                        rnd_llegada_mionca_cont = random.uniform(0, 1)
+                        prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 1.917, 2.083)
+                    else:
+                        siguen_llegando_mionca = False
+                        prox_llegada_mionca_cont = 999
+
+                    if (t1.localizacion != "Continente" and t2.localizacion != "Continente") or (
+                            t1.localizacion == "Continente" and t1.estado == "Cargando") \
+                            or (t2.localizacion == "Continente" and t2.estado == "Cargando") \
+                            or(trans_en_uso == "T1" and t1.capacidad<2)\
+                            or(trans_en_uso == "T2" and t2.capacidad<2)\
+                            or (trans_en_uso == "T3"):
+                        cola_mionca += 1
+
+                    else:
+                        if (trans_en_uso == "T1"):
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 2
+                            t1.cola_mionca += 1
+                        else:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 2
+                            t2.cola_mionca+=1
+                        rnd_carga = random.uniform(0, 1)
                         fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.05, 0.082)
-
-                    elif trans_en_uso == "T1" and cola_autos != 0 and t1.capacidad > 1:
-                        #Cargar un auto
-                        evento = "Fin de Carga Auto Continente"
-                        t1.estado == "Cargando"
-                        t1.capacidad -= 1
-                        t1.cola_autos += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
-
-                    elif trans_en_uso == "T2" and cola_mionca != 0 and t2.capacidad > 2:
-                        # Cargo un camión
-                        evento = "Fin de Carga Camión Continente"
-                        t2.estado == "Cargando"
-                        t2.capacidad -= 2
-                        t2.cola_mionca += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.05,0.082)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.05,0.082)
-
-                    elif trans_en_uso == "T2" and cola_autos != 0 and t2.capacidad > 1:
-                        # Cargar un auto
-                        evento = "Fin de Carga Auto Continente"
-                        t2.estado == "Cargando"
-                        t2.capacidad -= 1
-                        t2.cola_autos += 1
-                        rnd_carga = random.uniform(0, 1)
-                        t_fin_cargan_vehic_cont =  funcion_uniforme(rnd_carga, 0.017, 0.049)
-                        fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
-                    else:
-                        fin_cargan_vehic_cont = 999
-
-
-            elif opcion == prox_llegada_auto_cont:
-                ## Llega un auto
-                evento = "Llegada de Auto a Continente"
-                reloj = prox_llegada_auto_cont
-                if reloj <=12 and siguen_llegando_autos:
-                    rnd_llegada_auto_cont = random.uniform(0,1)
-                    prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont,0.167,0.33)
-                elif reloj <=19 and siguen_llegando_autos:
-                    rnd_llegada_auto_cont = random.uniform(0, 1)
-                    prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont, 0.417, 0.583)
-                else:
-                    siguen_llegando_autos = False
-                    prox_llegada_auto_cont = 9999
-                ##
-
-                if (t1.localizacion != "Continente" and t2.localizacion != "Continente") or (t1.localizacion == "Continente" and t1.estado == "Cargando" )\
-                        or(t2.localizacion == "Continente" and t2.estado == "Cargando" ) \
-                        or (trans_en_uso == "T1" and t1.capacidad < 1) \
-                        or (trans_en_uso == "T2" and t2.capacidad < 1):
-                    cola_autos += 1
-                else:
-                    if (trans_en_uso == "T1") and t1.estado == "Libre" :
-                        t1.estado = "Cargando"
-                        t1.capacidad -= 1
-                        t1.cola_autos += 1
-                    elif trans_en_uso == "T2" and t2.estado == "Libre":
-                        t2.estado = "Cargando"
-                        t2.capacidad -=1
-                        t2.cola_autos += 1
-
-                    rnd_carga = random.uniform(0, 1)
-                    t_fin_cargan_vehic_cont = + funcion_uniforme(rnd_carga, 0.017, 0.049)
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.017, 0.049)
-
-                    try:
-                        if (tabla_dia[dia-2].cola_max_auto_cont)<cola_autos:
-                            cola_max_auto = cola_mionca
-                        else:
-                            cola_max_auto = tabla_dia[dia-2].cola_max_auto_cont
-                    except:
-                        cola_max_auto = cola_autos
-
-            elif opcion == prox_llegada_mionca_cont:
-                ## Llega un camion
-                evento = "Llegada de Camión/Ómnibus a Continente"
-                reloj = prox_llegada_mionca_cont
-                if reloj <= 12 and siguen_llegando_mionca:
-                    rnd_llegada_mionca_cont = random.uniform(0, 1)
-                    prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.314, 0.346)
-                elif reloj <= 19.5 and siguen_llegando_mionca:
-                    rnd_llegada_mionca_cont = random.uniform(0, 1)
-                    prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 1.917, 2.083)
-                else:
-                    siguen_llegando_mionca = False
-                    prox_llegada_mionca_cont = 9999
-
-                if (t1.localizacion != "Continente" and t2.localizacion != "Continente") or (
-                        t1.localizacion == "Continente" and t1.estado == "Cargando") \
-                        or (t2.localizacion == "Continente" and t2.estado == "Cargando") \
-                        or(trans_en_uso == "T1" and t1.capacidad<2)\
-                        or(trans_en_uso == "T2" and t2.capacidad<2):
-                    cola_mionca += 1
-
-                else:
-                    if (trans_en_uso == "T1"):
-                        t1.estado = "Cargando"
-                        t1.capacidad -= 2
-                        t1.cola_mionca += 1
-                    else:
-                        t2.estado = "Cargando"
-                        t2.capacidad -= 2
-                        t2.cola_mionca+=1
-                    rnd_carga = random.uniform(0, 1)
-                    fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga, 0.05, 0.082)
-                    try:
-                        if (tabla_dia[dia-2].cola_max_mionca_cont)<cola_mionca:
+                        try:
+                            if (tabla_dia[dia-2].cola_max_mionca_cont)<cola_mionca:
+                                cola_max_mionca = cola_mionca
+                            else:
+                                cola_max_mionca = tabla_dia[dia-2].cola_max_mionca_cont
+                        except:
                             cola_max_mionca = cola_mionca
+
+                ############################### PARTE EL FERRY CHU CHUUU######################pame la pija#############
+                elif opcion == t1.hora_partida:
+                    #Revisar desde donde sale y liberar el T
+                    reloj = t1.hora_partida
+                    if t1.estado == "Cargando":
+                        t1.hora_partida = fin_cargan_vehic_cont + 0.001
+                    else:
+                        #Reviso que sea del continente o la isla
+                        t1.hora_partida = 999
+                        if t1.localizacion == "Continente":
+                            evento = "Salida T1 Cont-Isla"
+                            if t2.localizacion == "Continente":
+                                trans_en_uso = "T2"
+                            else:
+                                trans_en_uso = "T3"
+                            t1.hora_llegada = reloj + random.uniform(0.917,1.084)
+                            t1.puerto_salida = t1.localizacion
+                            t1.localizacion = "Mar"
+                            t1.hora_partida = t1.hora_llegada + 1
+
                         else:
-                            cola_max_mionca = tabla_dia[dia-2].cola_max_mionca_cont
-                    except:
-                        cola_max_mionca = cola_mionca
+                            evento = "Salida T1 Isla-Cont"
+                            if t2.localizacion == "Isla":
+                                trans_en_uso_isla = "T2"
+                            else:
+                                trans_en_uso_isla = "T3"
+                            t1.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                            t1.puerto_salida = t1.localizacion
+                            t1.localizacion = "Mar"
 
-            elif opcion == t1.hora_partida:
-                #Revisar desde donde sale y liberar el T
-
-                if t1.estado == "Cargando":
-                    t1.hora_partida = fin_cargan_vehic_cont + 0.001
-                if t1.localizacion == "Continente":
-                    evento = "Salida T1 Cont-Isla"
+            ################################# SALE EL SEGUNDO FERRY #######################################
+                elif opcion == t2.hora_partida:
+                    reloj = t2.hora_partida
+                    t2.hora_partida = 999
+                    if t2.estado == "Cargando":
+                        t2.hora_partida = fin_cargan_vehic_cont + 0.001
                     if t2.localizacion == "Continente":
-                        trans_en_uso = "T2"
+                        evento = "Salida T2 Cont-Isla"
+
+                        if t1.localizacion == "Continente":
+                            trans_en_uso = "T1"
+                        else:
+                            trans_en_uso = "T3"
+                        t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                        t2.puerto_salida = t2.localizacion
+                        t2.localizacion = "Mar"
+                        t2.hora_partida = t2.hora_llegada + 1
+
                     else:
-                        trans_en_uso = "T3"
-                    t1.hora_llegada = random.uniform(0.917,1.084)
-                    t1.puerto_salida = t1.localizacion
-                    t1.localizacion = "Mar"
-                t1.hora_partida = 999
-
-            elif opcion == t2.hora_partida:
-                if t2.estado == "Cargando":
-                    t2.hora_partida = fin_cargan_vehic_cont + 0.001
-                if t2.localizacion == "Continente":
-                    evento = "Salida T2 Cont-Isla"
-                    if t1.localizacion == "Continente":
-                        trans_en_uso = "T1"
-                    else:
-                        trans_en_uso = "T3"
-                    t2.hora_llegada = random.uniform(0.917, 1.084)
-                    t2.puerto_salida = t2.localizacion
-                    t2.localizacion = "Mar"
-                t2.hora_partida = 999
-
-            elif opcion == 20:
-                evento = "Fin de Día"
-                dia += 1
-                reloj = 20
-
-                cola_esp_man_auto = cola_autos
-                cola_esp_man_mionca = cola_max_mionca
+                        evento = "Salida T2 Isla-Cont"
+                        if t1.localizacion == "Isla":
+                            trans_en_uso_isla = "T1"
+                        else:
+                            trans_en_uso_isla = "T3"
+                        t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                        t2.puerto_salida = t2.localizacion
+                        t2.localizacion = "Mar"
 
 
-            try:
-                cola_esp_man_auto_acum = tabla_dia[-1].cola_esp_man_auto_acum + cola_esp_man_auto
-                cola_esp_man_mionca_acum = tabla_dia[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
-            except:
-                cola_esp_man_auto_acum = cola_esp_man_auto
-                cola_esp_man_mionca_acum = cola_esp_man_mionca
+        ##################################### FIN DEL DÍA ############################
+                elif opcion == 20:
+                    evento = "Fin de Día"
+                    dia += 1
+                    reloj = 20
+
+                    cola_esp_man_auto = cola_autos
+                    cola_esp_man_mionca = cola_max_mionca
+
+                    try:
+                        cola_esp_man_auto_acum = tabla_dia[-1].cola_esp_man_auto_acum + cola_esp_man_auto
+                        cola_esp_man_mionca_acum = tabla_dia[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
+                    except:
+                        cola_esp_man_auto_acum = cola_esp_man_auto
+                        cola_esp_man_mionca_acum = cola_esp_man_mionca
 
 
 
@@ -440,7 +535,9 @@ def generar_miles(cantidad_dias):
             rnd_carga, t_fin_cargan_vehic_cont, fin_cargan_vehic_cont, t1, t2, acum_auto, acum_mionca,
             acum_auto/dia, acum_mionca/dia)
             tabla_dia.append(entrada)
+            primero = True
             print(entrada.toString())
 
 
-generar_miles(2)
+
+generar_miles(1)
