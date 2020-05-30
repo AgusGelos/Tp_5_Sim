@@ -12,8 +12,10 @@ class Entrada_prueba:
                  #Carga cont
 
                  rnd_carga_vehiculo, tiempo_carga,tiempo_final, t1,t2, acum_paso_auto, acum_paso_mionca,
-                 prom_paso_auto,prom_paso_mionca):
+                 prom_paso_auto,prom_paso_mionca,acum_paso_auto_isla,acum_paso_mionca_isla,cola_max_mionca_isla,cola_max_auto_isla,cola_esp_man_auto_acum_isla,cola_esp_man_mionca_acum_isla):
         self.evento = evento
+        self.acum_paso_auto_isla = acum_paso_auto_isla
+        self.acum_paso_mionca_isla = acum_paso_mionca_isla
         self.dia = dia
         self.reloj = reloj
         # Llegada de vehículo Continente
@@ -29,6 +31,8 @@ class Entrada_prueba:
         self.cola_mionca_cont = cola_mionca_cont
         # Max de colas cont
         self.cola_max_autos_cont = cola_max_auto_cont
+        self.cola_max_mionca_isla = cola_max_mionca_isla
+        self.cola_max_autos_isla = cola_max_auto_isla
         self.cola_max_mionca_cont = cola_max_mionca_cont
         # Colas de espera a mañana cont
         self.cola_esp_man_auto = cola_esp_man_auto
@@ -36,6 +40,8 @@ class Entrada_prueba:
 
         self.cola_esp_man_auto_acum = cola_esp_man_auto_acum
         self.cola_esp_man_mionca_acum = cola_esp_man_mionca_acum
+        self.cola_esp_man_auto_acum_isla = cola_esp_man_auto_acum_isla
+        self.cola_esp_man_mionca_acum_isla = cola_esp_man_mionca_acum_isla
         self.cola_esp_man_auto_prom = cola_esp_man_auto_prom
         self.cola_esp_man_mionca_prom = cola_esp_man_mionca_prom
         self.cola_esp_man_total = (cola_esp_man_auto_prom + cola_esp_man_mionca_prom) / 2
@@ -54,4 +60,4 @@ class Entrada_prueba:
         self.prom_paso_mionca = prom_paso_mionca
 
     def toString(self):
-         return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
+        return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)

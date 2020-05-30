@@ -50,15 +50,15 @@ class Entrada:
         #Colas de espera a mañana cont
         self.cola_esp_man_auto = cola_esp_man_auto
         self.cola_esp_man_mionca = cola_esp_man_mionca
-        self.flag_espera_man_auto_cont = flag_espera_man_auto_cont
-        self.flag_espera_man_mionca_cont = flag_espera_man_mionca_cont
+        #self.flag_espera_man_auto_cont = flag_espera_man_auto_cont
+        #self.flag_espera_man_mionca_cont = flag_espera_man_mionca_cont
         self.cola_esp_man_auto_acum = cola_esp_man_auto_acum
         self.cola_esp_man_mionca_acum = cola_esp_man_mionca_acum
         self.cola_esp_man_auto_prom = cola_esp_man_auto_prom
         self.cola_esp_man_mionca_prom = cola_esp_man_mionca_prom
         self.cola_esp_man_total = (cola_esp_man_auto_prom + cola_esp_man_mionca_prom)/2
         #Carga de vehículos cont
-        self.flag_esta_cargando = flag_esta_cargando
+        #self.flag_esta_cargando = flag_esta_cargando
         self.rnd_carga_vehiculo = rnd_carga_vehiculo
         self.tiempo_carga = tiempo_carga
         self.tiempo_final = tiempo_final
