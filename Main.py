@@ -365,7 +365,7 @@ def generar_miles(cantidad_dias):
                             t2.hora_partida = fin_cargan_auto_cont + 0.01
                     elif t2.localizacion == "Continente":
                         evento = "Salida T2 Cont-Isla"
-                        print(t2.estado)
+
 
                         if t1.localizacion == "Continente":
                             trans_en_uso = "T1"
