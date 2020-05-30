@@ -450,6 +450,7 @@ def generar_miles(cantidad_dias):
 
                         if t1.estado == "Cargando":
                             if t1.localizacion == "Continente":
+                                evento = "Esperando Para partir"
                                 if fin_cargan_auto_cont == 999:
                                     t1.hora_partida = fin_cargan_vehic_cont + 0.01
                                 else:
@@ -464,6 +465,7 @@ def generar_miles(cantidad_dias):
                             reloj = t1.hora_partida
                             t1.hora_partida = 999
                             if t1.localizacion == "Continente":
+
                                 evento = "Salida T1 Cont-Isla"
                                 if t2.localizacion == "Continente" and t2.estado != "Mantenimiento":
                                     trans_en_uso = "T2"
@@ -493,6 +495,7 @@ def generar_miles(cantidad_dias):
                         t2.hora_partida = 999
                     else:
                         if t2.estado == "Cargando":
+                            evento = "Esperando para Partir"
                             if t2.localizacion == "Continente":
                                 if fin_cargan_auto_cont == 999:
                                     t2.hora_partida = fin_cargan_vehic_cont + 0.01
@@ -911,6 +914,7 @@ def generar_miles(cantidad_dias):
 
                 ##################################### FIN DEL DÍA ############################
                 elif opcion == fin_del_dia:
+                    evento = "Esperando Fin"
                     if t1.hora_llegada != 999:
                         fin_del_dia += 0.5
                     elif t2.hora_llegada != 999:

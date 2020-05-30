@@ -338,9 +338,6 @@ def generar_miles(cantidad_dias):
                         rnd_carga_auto_cont,t_fin_cargan_auto_cont,fin_cargan_auto_cont,cola_autos,t2 = cargar_auto(reloj, t2, cola_autos)
 
 
-
-
-
                 ################################### LLEGADA DE CAMION ####################################
 
                 elif opcion == prox_llegada_mionca_cont:
@@ -363,7 +360,6 @@ def generar_miles(cantidad_dias):
                         rnd_carga_mionca_cont,t_fin_cargan_vehic_cont,fin_cargan_vehic_cont,cola_mionca,t1 = cargar_mionca(reloj, t1, cola_mionca)
                     elif (trans_en_uso == "T2") and t2.estado == "Libre":
                         rnd_carga_mionca_cont,t_fin_cargan_vehic_cont,fin_cargan_vehic_cont,cola_mionca,t2 = cargar_mionca(reloj, t2, cola_mionca)
-
 
 
                 ############################### PARTE EL FERRY CHU CHUUU######################pame la pija#############
@@ -489,8 +485,6 @@ def generar_miles(cantidad_dias):
                         if t2.localizacion != "Isla":
                             trans_en_uso_isla = "T1"
                     t1.hora_llegada = 999
-
-
 
 
                 #############Llegada de ferry 2 al continente###########
