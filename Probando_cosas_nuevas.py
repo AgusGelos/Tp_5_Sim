@@ -10,6 +10,23 @@ from Class.Entrada_Cont_prueba import Entrada_prueba
 def funcion_uniforme(rnd,lim_inf, lim_sup):
     return lim_inf + rnd*(lim_sup-lim_inf)
 
+def cargar_auto_cont(reloj, t1,cola_autos):
+    fin_cargan_auto_cont = 999
+    if t1.capacidad >= 1 and cola_autos != 0:
+        # Cargo un auto
+        t1.estado = "Cargando"
+        t1.capacidad -= 1
+        t1.cola_autos += 1
+        cola_autos -= 1
+        rnd_carga_auto_cont = random.uniform(0, 1)
+        t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga_auto_cont, 0.017, 0.049)
+        fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
+    elif t1.capacidad == 0:
+        t1.hora_partida = reloj + 0.01
+
+    return fin_cargan_auto_cont,t1
+
+
 def generar_miles(cantidad_dias):
 
     tabla_dia = []
@@ -972,3 +989,7 @@ def generar_miles(cantidad_dias):
 
 
 generar_miles(1)
+
+
+
+

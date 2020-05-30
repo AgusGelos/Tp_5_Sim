@@ -103,6 +103,10 @@ class Entrada:
         self.rnd_carga_vehiculo_isla = rnd_carga_vehiculo_isla
         self.tiempo_carga_isla = tiempo_carga_isla
         self.tiempo_final_isla = tiempo_final_isla
+        self.tiempo_final_vehic_isla = tiempo_final_isla
+        self.rnd_carga_auto_isla = rnd_carga_auto_isla
+        self.tiempo_carga_auto_isla = tiempo_carga_auto_isla
+        self.tiempo_final_auto_isla = tiempo_final_auto_isla
         # Contadores de Isla a Continente
         self.acum_paso_auto_isla = acum_paso_auto_isla
         self.acum_paso_mionca_isla = acum_paso_mionca_isla
@@ -111,4 +115,7 @@ class Entrada:
 
     def toString(self):
         return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
+
+    def toStringIsla(self):
+        return (self.cola_autos_isla,self.cola_mionca_isla)
 
