@@ -54,4 +54,4 @@ class Entrada_prueba:
         self.prom_paso_mionca = prom_paso_mionca
 
     def toString(self):
-        print(self.reloj,self.evento)
+        print(self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
