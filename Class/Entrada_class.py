@@ -11,11 +11,11 @@ class Entrada:
                  cola_esp_man_mionca_acum,cola_esp_man_auto_prom,cola_esp_man_mionca_prom,
                  #Carga cont
 
-                 rnd_carga_vehiculo, tiempo_carga,tiempo_final, t1,t2, acum_paso_auto, acum_paso_mionca,
+                 rnd_carga_vehiculo, tiempo_carga,tiempo_final,rnd_carga_auto, tiempo_carga_auto,tiempo_final_auto , t1,t2, acum_paso_auto, acum_paso_mionca,
                  prom_paso_auto,prom_paso_mionca,
                  ###############Isla####################
                  #Llegada
-                 rnd_llegada_auto_isla, prox_llegada_auto_isla,rnd_llegada_mionca_isla, prox_llegada_mionca_isla, tipo_vehiculo_isla,
+                 rnd_llegada_auto_isla, prox_llegada_auto_isla,rnd_llegada_mionca_isla, prox_llegada_mionca_isla,
 
                  # Colas isla
                  cola_autos_isla, cola_mionca_isla,
@@ -26,7 +26,8 @@ class Entrada:
                  cola_esp_man_auto_isla, cola_esp_man_mionca_isla, cola_esp_man_auto_acum_isla,
                  cola_esp_man_mionca_acum_isla, cola_esp_man_auto_prom_isla, cola_esp_man_mionca_prom_isla,
                  # Carga isla
-                 rnd_carga_vehiculo_isla, tiempo_carga_isla, tiempo_final_isla, acum_paso_auto_isla, acum_paso_mionca_isla,
+                 rnd_carga_vehiculo_isla, tiempo_carga_isla, tiempo_final_isla, rnd_carga_auto_isla, tiempo_carga_auto_isla, tiempo_final_auto_isla ,
+                 acum_paso_auto_isla, acum_paso_mionca_isla,
                  prom_paso_auto_isla, prom_paso_mionca_isla,
                  ):
         self.evento = evento
@@ -59,8 +60,11 @@ class Entrada:
         #Carga de vehículos cont
         #self.flag_esta_cargando = flag_esta_cargando
         self.rnd_carga_vehiculo = rnd_carga_vehiculo
-        self.tiempo_carga = tiempo_carga
-        self.tiempo_final = tiempo_final
+        self.tiempo_carga_vehic = tiempo_carga
+        self.tiempo_final_vehic= tiempo_final
+        self.rnd_carga_auto = rnd_carga_auto
+        self.tiempo_carga_auto = tiempo_carga_auto
+        self.tiempo_final_auto = tiempo_final_auto
         #Transbordadores
         self.t1 = t1
         self.t2 = t2
@@ -75,7 +79,7 @@ class Entrada:
         self.prox_llegada_auto_isla = prox_llegada_auto_isla
         self.rnd_llegada_mionca_cont = rnd_llegada_mionca_isla
         self.prox_llegada_mionca_isla = prox_llegada_mionca_isla
-        self.tipo_vehiculo_isla = tipo_vehiculo_isla
+        #self.tipo_vehiculo_isla = tipo_vehiculo_isla
         #self.flag_espera_auto_isla = flag_espera_auto_isla
         #self.flag_espera_mionca_isla = flag_espera_mionca_isla
         # Colas diarias isla
@@ -105,5 +109,6 @@ class Entrada:
         self.prom_paso_auto_isla = prom_paso_auto_isla
         self.prom_paso_mionca_isla = prom_paso_mionca_isla
 
-
+    def toString(self):
+        return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
 
