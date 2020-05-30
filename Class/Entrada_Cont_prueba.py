@@ -12,7 +12,15 @@ class Entrada_prueba:
                  #Carga cont
 
                  rnd_carga_vehiculo, tiempo_carga,tiempo_final, t1,t2, acum_paso_auto, acum_paso_mionca,
-                 prom_paso_auto,prom_paso_mionca,acum_paso_auto_isla,acum_paso_mionca_isla,cola_max_mionca_isla,cola_max_auto_isla,cola_esp_man_auto_acum_isla,cola_esp_man_mionca_acum_isla):
+                 prom_paso_auto,prom_paso_mionca,acum_paso_auto_isla,acum_paso_mionca_isla,
+                 #Colas max
+                 cola_max_mionca_isla,cola_max_auto_isla,
+                 #Espera a Mañana
+                 cola_esp_man_auto_isla, cola_esp_man_mionca_isla,
+                 cola_esp_man_auto_acum_isla,cola_esp_man_mionca_acum_isla,
+                 cola_esp_man_auto_prom_isla,cola_esp_man_mionca_prom_isla,):
+
+
         self.evento = evento
         self.acum_paso_auto_isla = acum_paso_auto_isla
         self.acum_paso_mionca_isla = acum_paso_mionca_isla
@@ -58,6 +66,7 @@ class Entrada_prueba:
         self.acum_paso_mionca = acum_paso_mionca
         self.prom_paso_auto = prom_paso_auto
         self.prom_paso_mionca = prom_paso_mionca
+        self.cola
 
     def toString(self):
         return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)

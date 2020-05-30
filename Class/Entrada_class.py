@@ -15,18 +15,17 @@ class Entrada:
                  prom_paso_auto,prom_paso_mionca,
                  ###############Isla####################
                  #Llegada
-                 rnd_llegada_auto_isla, prox_llegada_auto_isla,rnd_llegada_mionca_isla, prox_llegada_mionca_isla, tipo_vehiculo_isla,flag_espera_auto_isla, flag_espera_mionca_isla,
+                 rnd_llegada_auto_isla, prox_llegada_auto_isla,rnd_llegada_mionca_isla, prox_llegada_mionca_isla, tipo_vehiculo_isla,
 
                  # Colas isla
                  cola_autos_isla, cola_mionca_isla,
                  # Colas Max
                  cola_max_auto_isla, cola_max_mionca_isla,
                  # Flags Espera a mañana isla
-                 flag_espera_man_auto_isla, flag_espera_man_mionca_isla,
+
                  cola_esp_man_auto_isla, cola_esp_man_mionca_isla, cola_esp_man_auto_acum_isla,
                  cola_esp_man_mionca_acum_isla, cola_esp_man_auto_prom_isla, cola_esp_man_mionca_prom_isla,
                  # Carga isla
-                 flag_esta_cargando_isla,
                  rnd_carga_vehiculo_isla, tiempo_carga_isla, tiempo_final_isla, acum_paso_auto_isla, acum_paso_mionca_isla,
                  prom_paso_auto_isla, prom_paso_mionca_isla,
                  ):
@@ -77,8 +76,8 @@ class Entrada:
         self.rnd_llegada_mionca_cont = rnd_llegada_mionca_isla
         self.prox_llegada_mionca_isla = prox_llegada_mionca_isla
         self.tipo_vehiculo_isla = tipo_vehiculo_isla
-        self.flag_espera_auto_isla = flag_espera_auto_isla
-        self.flag_espera_mionca_isla = flag_espera_mionca_isla
+        #self.flag_espera_auto_isla = flag_espera_auto_isla
+        #self.flag_espera_mionca_isla = flag_espera_mionca_isla
         # Colas diarias isla
         self.cola_autos_isla = cola_autos_isla
         self.cola_mionca_isla = cola_mionca_isla
@@ -88,15 +87,15 @@ class Entrada:
         # Colas de espera a mañana isla
         self.cola_esp_man_auto_isla = cola_esp_man_auto_isla
         self.cola_esp_man_mionca_isla = cola_esp_man_mionca_isla
-        self.flag_espera_man_auto_isla = flag_espera_man_auto_isla
-        self.flag_espera_man_mionca_isla = flag_espera_man_mionca_isla
+        #self.flag_espera_man_auto_isla = flag_espera_man_auto_isla
+        #self.flag_espera_man_mionca_isla = flag_espera_man_mionca_isla
         self.cola_esp_man_auto_acum_isla = cola_esp_man_auto_acum_isla
         self.cola_esp_man_mionca_acum_isla = cola_esp_man_mionca_acum_isla
         self.cola_esp_man_auto_prom_isla = cola_esp_man_auto_prom_isla
         self.cola_esp_man_mionca_prom_isla = cola_esp_man_mionca_prom_isla
         self.cola_esp_man_total_isla = (cola_esp_man_auto_prom_isla + cola_esp_man_mionca_prom_isla) / 2
         # Carga de vehículos isla
-        self.flag_esta_cargando_isla = flag_esta_cargando_isla
+        #self.flag_esta_cargando_isla = flag_esta_cargando_isla
         self.rnd_carga_vehiculo_isla = rnd_carga_vehiculo_isla
         self.tiempo_carga_isla = tiempo_carga_isla
         self.tiempo_final_isla = tiempo_final_isla

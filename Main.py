@@ -41,6 +41,15 @@ def generar_miles(cantidad_dias):
         hora_fin_matenimiento_t1 = 999
         hora_fin_matenimiento_t2 = 999
         fin_del_dia = 20
+        ################################### PARAMETROS DE ISLA ###########################
+        siguen_llegando_autos_isla = True
+        siguen_llegando_mionca_isla = True
+        rnd_llegada_auto_isla = random.uniform(0, 1)
+        prox_llegada_auto_isla = 10 + funcion_uniforme(rnd_llegada_auto_isla, 0.1167, 0.2833)
+        rnd_llegada_mionca_isla = random.uniform(0, 1)
+        prox_llegada_mionca_isla = 10 + funcion_uniforme(rnd_llegada_mionca_isla, 0.5, 1.5)
+        fin_cargan_vehic_isla = 999
+        fin_cargan_auto_isla = 999
 
 
         ####################### CHEKAR estados de Trans a valores iniciales o mantenimiento ######################################
@@ -76,9 +85,15 @@ def generar_miles(cantidad_dias):
             cola_mionca = 0
             acum_auto = 0
             acum_mionca = 0
+            cola_autos_isla = 0
+            cola_mionca_isla = 0
+            acum_auto_isla = 0
+            acum_mionca_isla = 0
         else:
             acum_auto = tabla_completa[-1][-1].acum_paso_auto
             acum_mionca = tabla_completa[-1][-1].acum_paso_mionca
+            acum_auto_isla = tabla_completa[-1][-1].acum_paso_auto_isla
+            acum_mionca_isla = tabla_completa[-1][-1].acum_paso_mionca_isla
 
         corta = False
         #########################################################   CICLO     ###################################################

@@ -15,7 +15,7 @@ def generar_miles(cantidad_dias):
     tabla_dia = []
     tabla_completa = []
 
-    t1 = Transbordador(0,0,10, 9, "Libre", "Continente", 5,99,"Continente")
+    t1 = Transbordador(0,0,10, 9, "Libre", "Continente", 0,99,"Continente")
     t2 = Transbordador(0,0,20, 10, "Libre", "Continente", 10,99,"Continente")
 
     cola_max_auto, cola_max_mionca = 0,0
@@ -23,9 +23,9 @@ def generar_miles(cantidad_dias):
         ############# Parámetros de entrada
         if i != 0:
             tabla_completa.append(tabla_dia)
+        tabla_dia = []
         reloj = 7
         evento = "Inicio del Día"
-        ##################################################### PARAM CONT ######################################################
         rnd_llegada_mionca_cont = random.uniform(0, 1)
         prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.28, 0.38)
         rnd_llegada_auto_cont = random.uniform(0, 1)
@@ -38,18 +38,38 @@ def generar_miles(cantidad_dias):
         fin_cargan_vehic_cont = 999
         primero = False
         fin_cargan_auto_cont = 999
-        #################################### PARAM ISLA ####################################################################
+        hora_fin_matenimiento_t1 = 999
+        hora_fin_matenimiento_t2 = 999
+        fin_del_dia = 20
+        ################################### PARAMETROS DE ISLA ###########################
+        siguen_llegando_autos_isla = True
+        siguen_llegando_mionca_isla = True
+        rnd_llegada_auto_isla = random.uniform(0, 1)
+        prox_llegada_auto_isla = 10 + funcion_uniforme(rnd_llegada_auto_isla, 0.1167, 0.2833)
+        rnd_llegada_mionca_isla = random.uniform(0, 1)
+        prox_llegada_mionca_isla = 10 + funcion_uniforme(rnd_llegada_mionca_isla, 0.5, 1.5)
+        fin_cargan_vehic_isla = 999
+        fin_cargan_auto_isla = 999
 
 
         ####################### CHEKAR estados de Trans a valores iniciales o mantenimiento ######################################
         if i == t1.mantenimiento:
             t1.estado = "Mantenimiento"
+            trans_en_uso = "T2"
             t1.mantenimiento += 10
-            hora_fin_matenimiento = 13
+            t1.hora_partida = 999
+            t1.hora_llegada = 999
+            t2.hora_partida = 9
+            hora_fin_matenimiento_t1 = 13
         elif i == t2.mantenimiento:
             t2.estado = "Mantenimiento"
             t2.mantenimiento += 10
-            hora_fin_matenimiento = 13
+            trans_en_uso = "T1"
+            t1.hora_partida = 9
+            hora_fin_matenimiento_t2 = 13
+            t2.hora_partida = 999
+            t2.hora_llegada = 999
+
         else:
             t1.estado = "Libre"
             t1.localizacion = "Continente"
@@ -57,7 +77,7 @@ def generar_miles(cantidad_dias):
             t2.estado = "Libre"
             t2.localizacion = "Continente"
             t2.hora_partida = 10
-            hora_fin_matenimiento = 999
+
 
         ############################## Establecer el valor de las colas ACUMULADAS ##############################################
         if i == 0:
@@ -65,11 +85,17 @@ def generar_miles(cantidad_dias):
             cola_mionca = 0
             acum_auto = 0
             acum_mionca = 0
+            cola_autos_isla = 0
+            cola_mionca_isla = 0
+            acum_auto_isla = 0
+            acum_mionca_isla = 0
         else:
             acum_auto = tabla_completa[-1][-1].acum_paso_auto
             acum_mionca = tabla_completa[-1][-1].acum_paso_mionca
+            acum_auto_isla = tabla_completa[-1][-1].acum_paso_auto_isla
+            acum_mionca_isla = tabla_completa[-1][-1].acum_paso_mionca_isla
 
-
+        corta = False
         #########################################################   CICLO     ###################################################
         while reloj != 20:
             cola_esp_man_auto = 0
@@ -80,16 +106,26 @@ def generar_miles(cantidad_dias):
             rnd_carga = 0
             rnd_llegada_auto_cont = 0
             rnd_llegada_mionca_cont = 0
+            ############################################## param ISLA ##################################+
+            cola_esp_man_auto_isla = 0
+            cola_esp_man_mionca_isla = 0
+            cola_esp_man_mionca_acum_isla = 0
+            cola_esp_man_auto_acum_isla = 0
+            t_fin_cargan_vehic_isla = 0
+            rnd_llegada_auto_isla = 0
+            rnd_llegada_mionca_isla = 0
 
             ############################################## COLA DE AYER ##########################################
 
             if (len(tabla_completa) != 0) and reloj == 7:
                 cola_autos = tabla_completa[-1][-1].cola_esp_man_auto
                 cola_mionca = tabla_completa[-1][-1].cola_esp_man_mionca
+                cola_autos_isla = tabla_completa[-1][-1].cola_esp_man_auto_isla
+                cola_mionca_isla = tabla_completa[-1][-1].cola_esp_man_mionca_isla
                 ##Prox Carga de vehículo:
 
-                ################################# CONFIGURAR MANTENIMIENTO DE TrANSAS #####################################
-                if cola_mionca > 0:
+
+                if cola_mionca > 0 and hora_fin_matenimiento_t1 == 999:
                     t1.estado = "Cargando"
                     t1.capacidad -= 2
                     t1.cola_mionca += 1
@@ -99,7 +135,7 @@ def generar_miles(cantidad_dias):
 
                     fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
 
-                elif cola_autos > 0:
+                elif cola_autos > 0 and hora_fin_matenimiento_t1 == 999:
                     t1.estado = "Cargando"
                     t1.capacidad -= 1
                     t1.cola_autos += 1
@@ -108,24 +144,96 @@ def generar_miles(cantidad_dias):
                     t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
                     fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
                 else:
-                    t1.estado = "Libre"
-                    fin_cargan_vehic_cont = 999
+                    if t1.estado == "Mantenimiento":
+                        if cola_mionca > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 2
+                            t2.cola_mionca += 1
+                            cola_mionca -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.05, 0.082)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif cola_autos > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 1
+                            t2.cola_autos += 1
+                            cola_autos -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
+
 
 
             if primero  :
                 ########################################## OPCIÓN DE MINIMO ########################################################
 
                 opcion = min(prox_llegada_auto_cont,prox_llegada_mionca_cont,fin_cargan_vehic_cont, t1.hora_partida,
-                             t2.hora_partida,t1.hora_llegada,t2.hora_llegada, hora_descarga_t1, hora_descarga_t2, fin_cargan_auto_cont ,20)
+                             t2.hora_partida,t1.hora_llegada,t2.hora_llegada, hora_descarga_t1, hora_descarga_t2, fin_cargan_auto_cont,
+                             hora_fin_matenimiento_t1,hora_fin_matenimiento_t2,fin_del_dia)
 
                 ########################################## Curso normal ##################################################
 
 
+                #################################################### FIN MANTENIMIENTO T1 #########################################
+                if opcion == hora_fin_matenimiento_t1:
+                    evento = "Fin Mantenimiento T1"
+                    t1.estado = "Libre"
+                    reloj = hora_fin_matenimiento_t1
+                    t1.hora_partida = reloj + 1
+                    hora_fin_matenimiento_t1 = 999
+                    if t2.localizacion != "Continente":
+                        trans_en_uso = "T1"
+                        if cola_mionca > 0:
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 2
+                            t1.cola_mionca += 1
+                            cola_mionca -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.05, 0.082)
+
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif cola_autos > 0:
+                            t1.estado = "Cargando"
+                            t1.capacidad -= 1
+                            t1.cola_autos += 1
+                            cola_autos -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
+
+                #################################################### FIN MANTENIMIENTO T2 #########################################
+                elif opcion == hora_fin_matenimiento_t2:
+                    evento = "Fin Mantenimiento T2"
+                    t2.estado = "Libre"
+                    reloj = hora_fin_matenimiento_t2
+                    t2.hora_partida = reloj + 1
+                    hora_fin_matenimiento_t2 = 999
+                    if t1.localizacion != "Continente":
+                        trans_en_uso = "T2"
+                        if cola_mionca > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 2
+                            t2.cola_mionca += 1
+                            cola_mionca -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.05, 0.082)
+                            fin_cargan_vehic_cont = reloj + t_fin_cargan_vehic_cont
+
+                        elif cola_autos > 0:
+                            t2.estado = "Cargando"
+                            t2.capacidad -= 1
+                            t2.cola_autos += 1
+                            cola_autos -= 1
+                            rnd_carga = random.uniform(0, 1)
+                            t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga, 0.017, 0.049)
+                            fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
                 #################################################### FIN DE CARGA MIONCA CONT #################################
-                if opcion == fin_cargan_vehic_cont:
+                elif opcion == fin_cargan_vehic_cont:
                     reloj = fin_cargan_vehic_cont
                     fin_cargan_vehic_cont = 999
-                    evento = "Fin Carga de Mionca Cont"
+                    evento = "Fin Carga de Camión Cont"
                     if trans_en_uso == "T1":
                         t1.estado = "Libre"
                         if t1.capacidad >= 2 and cola_mionca != 0:
@@ -331,65 +439,77 @@ def generar_miles(cantidad_dias):
                 ############################### PARTE EL FERRY CHU CHUUU######################pame la pija#############
                 elif opcion == t1.hora_partida:
                     #Revisar desde donde sale y liberar el T
-                    reloj = t1.hora_partida
-                    if t1.estado == "Cargando":
-                        t1.hora_partida = fin_cargan_vehic_cont + 0.001
-                    else:
-                        #Reviso que sea del continente o la isla
+                    if reloj >= 20 and t1.localizacion == "Continente":
                         t1.hora_partida = 999
-                        if t1.localizacion == "Continente":
-                            evento = "Salida T1 Cont-Isla"
-                            if t2.localizacion == "Continente":
-                                trans_en_uso = "T2"
-                            else:
-                                trans_en_uso = "T3"
-                            t1.hora_llegada = reloj + random.uniform(0.917,1.084)
-                            t1.puerto_salida = t1.localizacion
-                            t1.localizacion = "Mar"
-                            t1.hora_partida = t1.hora_llegada + 1
-
+                    else:
+                        reloj = t1.hora_partida
+                        t1.hora_partida = 999
+                        if t1.estado == "Cargando":
+                            t1.hora_partida = fin_cargan_vehic_cont + 0.001
                         else:
-                            evento = "Salida T1 Isla-Cont"
-                            if t2.localizacion == "Isla":
-                                trans_en_uso_isla = "T2"
+                            #Reviso que sea del continente o la isla
+
+                            if t1.localizacion == "Continente":
+                                evento = "Salida T1 Cont-Isla"
+                                if t2.localizacion == "Continente" and t2.estado != "Mantenimiento":
+                                    trans_en_uso = "T2"
+                                else:
+                                    trans_en_uso = "T3"
+                                t1.hora_llegada = reloj + random.uniform(0.917,1.084)
+                                t1.puerto_salida = t1.localizacion
+                                t1.localizacion = "Mar"
+                                t1.hora_partida = t1.hora_llegada + 1
+
                             else:
-                                trans_en_uso_isla = "T3"
-                            t1.hora_llegada = reloj + random.uniform(0.917, 1.084)
-                            t1.puerto_salida = t1.localizacion
-                            t1.localizacion = "Mar"
+                                evento = "Salida T1 Isla-Cont"
+
+                                if t2.localizacion == "Isla":
+                                    trans_en_uso_isla = "T2"
+                                else:
+                                    trans_en_uso_isla = "T3"
+
+                                t1.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                                t1.puerto_salida = t1.localizacion
+                                t1.localizacion = "Mar"
 
             ################################# SALE EL SEGUNDO FERRY #######################################
                 elif opcion == t2.hora_partida:
-                    reloj = t2.hora_partida
-                    t2.hora_partida = 999
-                    if t2.estado == "Cargando":
-                        if fin_cargan_auto_cont == 990:
-                            t2.hora_partida = fin_cargan_vehic_cont + 0.01
-                        else:
-                            t2.hora_partida = fin_cargan_auto_cont + 0.01
-                    elif t2.localizacion == "Continente":
-                        evento = "Salida T2 Cont-Isla"
-
-
-                        if t1.localizacion == "Continente":
-                            trans_en_uso = "T1"
-                        else:
-                            trans_en_uso = "T3"
-                        t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
-                        t2.puerto_salida = t2.localizacion
-                        t2.localizacion = "Mar"
-                        t2.hora_partida = t2.hora_llegada + 1
-
+                    if reloj >= 20 and t2.localizacion == "Contiente":
+                        t2.hora_partida = 999
                     else:
-                        evento = "Salida T2 Isla-Cont"
-                        if t1.localizacion == "Isla":
-                            trans_en_uso_isla = "T1"
+                        reloj = t2.hora_partida
+                        t2.hora_partida = 999
+                        if t2.estado == "Cargando":
+                            if fin_cargan_auto_cont == 999:
+                                t2.hora_partida = fin_cargan_vehic_cont + 0.01
+                            else:
+                                t2.hora_partida = fin_cargan_auto_cont + 0.01
+                        elif t2.localizacion == "Continente":
+                            evento = "Salida T2 Cont-Isla"
+
+
+                            if t1.localizacion == "Continente" and t1.estado != "Mantenimiento":
+                                trans_en_uso = "T1"
+                            else:
+                                trans_en_uso = "T3"
+                            t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                            t2.puerto_salida = t2.localizacion
+                            t2.localizacion = "Mar"
+                            t2.hora_partida = t2.hora_llegada + 1
+
                         else:
-                            trans_en_uso_isla = "T3"
-                        t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
-                        t2.puerto_salida = t2.localizacion
-                        t2.localizacion = "Mar"
-               #############Llegada de ferry 1 al continente###########
+                            evento = "Salida T2 Isla-Cont"
+
+                            if t1.localizacion == "Isla":
+                                trans_en_uso_isla = "T1"
+                            else:
+                                trans_en_uso_isla = "T3"
+
+                            t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                            t2.puerto_salida = t2.localizacion
+                            t2.localizacion = "Mar"
+
+               #################################Llegada de ferry 1 al continente###################################
                 elif opcion == t1.hora_llegada:
                     acum_auto += t1.cola_autos
                     acum_mionca += t1.cola_mionca
@@ -405,7 +525,7 @@ def generar_miles(cantidad_dias):
                         for i in range(t1.cola_mionca):
                             hora_descarga_t1 += random.uniform(0.024,0.041)
 
-                        if t2.localizacion != "Continente":
+                        if t2.localizacion != "Continente" or t2.estado == "Mantenimiento":
                             trans_en_uso = "T1"
                     else:
                         evento = "Llegada T1 a Isla"
@@ -437,7 +557,7 @@ def generar_miles(cantidad_dias):
                         for i in range(t2.cola_mionca):
                             hora_descarga_t2 += random.uniform(0.024, 0.041)
 
-                        if t1.localizacion != "Continente":
+                        if t1.localizacion != "Continente" or t1.estado == "Mantenimiento":
                             trans_en_uso = "T2"
                     ##################################### Llegada del Ferry 2 a la ISLA #################################
                     else:
@@ -461,7 +581,7 @@ def generar_miles(cantidad_dias):
                     t1.cola_mionca = 0
                     t1.capacidad = 10
                     t1.hora_partida = reloj + 1
-                    if t1.localizacion == "Continente" and trans_en_uso == "T1":
+                    if t1.localizacion == "Continente" and trans_en_uso == "T1" and reloj <= 20:
                         if cola_mionca > 0:
                             t1.estado = "Cargando"
                             t1.capacidad -= 2
@@ -491,7 +611,7 @@ def generar_miles(cantidad_dias):
                     t2.capacidad = 20
                     t2.hora_partida = reloj + 1
 
-                    if t2.localizacion == "Continente" and trans_en_uso == "T2":
+                    if t2.localizacion == "Continente" and trans_en_uso == "T2" and reloj <= 20:
                         if cola_mionca > 0:
                             t2.estado = "Cargando"
                             t2.capacidad -= 2
@@ -513,20 +633,30 @@ def generar_miles(cantidad_dias):
 
 
         ##################################### FIN DEL DÍA ############################
-                elif opcion == 20:
-                    evento = "Fin de Día"
-                    dia += 1
-                    reloj = 20
+                elif opcion == fin_del_dia:
+                    if t1.hora_llegada != 999:
+                        fin_del_dia += 0.5
+                    elif t2.hora_llegada != 999:
+                        fin_del_dia += 0.5
+                    elif fin_cargan_auto_cont != 999:
+                        fin_del_dia += 0.2
+                    elif fin_cargan_vehic_cont != 999:
+                        fin_del_dia +=0.2
 
-                    cola_esp_man_auto = cola_autos
-                    cola_esp_man_mionca = cola_max_mionca
+                    else:
+                        evento = "Fin de Día"
+                        dia += 1
+                        reloj = fin_del_dia
 
-                    try:
-                        cola_esp_man_auto_acum = tabla_dia[-1].cola_esp_man_auto_acum + cola_esp_man_auto
-                        cola_esp_man_mionca_acum = tabla_dia[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
-                    except:
-                        cola_esp_man_auto_acum = cola_esp_man_auto
-                        cola_esp_man_mionca_acum = cola_esp_man_mionca
+                        cola_esp_man_auto = cola_autos + t1.cola_autos + t2.cola_autos
+                        cola_esp_man_mionca = cola_max_mionca + t1.cola_mionca + t2.cola_mionca
+                        corta = True
+                        try:
+                            cola_esp_man_auto_acum = tabla_dia[-1].cola_esp_man_auto_acum + cola_esp_man_auto
+                            cola_esp_man_mionca_acum = tabla_dia[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
+                        except:
+                            cola_esp_man_auto_acum = cola_esp_man_auto
+                            cola_esp_man_mionca_acum = cola_esp_man_mionca
 
 
 
@@ -546,8 +676,9 @@ def generar_miles(cantidad_dias):
             acum_auto/dia, acum_mionca/dia)
             tabla_dia.append(entrada)
             primero = True
-            print(entrada.toString(),trans_en_uso, t1.capacidad,t2.capacidad)
-
+            print(entrada.toString(),trans_en_uso, t1.capacidad,t2.capacidad,"-----" ,t1.cola_autos ,t1.cola_mionca,"----",t2.cola_autos, t2.cola_mionca)
+            if corta:
+                break
 
 
 generar_miles(1)
