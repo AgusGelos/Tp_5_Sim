@@ -929,7 +929,7 @@ def generar_miles(cantidad_dias,lim_inf, lim_sup):
 
                     else:
                         evento = "Fin de Día"
-                        dia += 1
+
                         reloj = fin_del_dia
 
                         cola_esp_man_auto = cola_autos + t1.cola_autos + t2.cola_autos
@@ -983,8 +983,13 @@ def generar_miles(cantidad_dias,lim_inf, lim_sup):
                 break
 
         aux = tabla_dia
-        if i < 5 or (i> lim_inf and i<lim_sup) or (i> cantidad_dias-5):
+        if dia < 5 :
             tabla_completa.append(tabla_dia)
+        elif dia > lim_inf and dia < lim_sup:
+            tabla_completa.append(tabla_dia)
+        elif dia > cantidad_dias - 5:
+            tabla_completa.append(tabla_dia)
+
 
     print(len(tabla_completa))
     for i in range(len(tabla_completa)):
