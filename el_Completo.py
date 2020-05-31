@@ -21,7 +21,7 @@ def generar_miles(cantidad_dias,lim_inf, lim_sup):
     autos_totales_cont = 0
     camiones_totales_cont = 0
     vehic_totales_isla = 0
-
+    dia = 0
     cola_max_auto, cola_max_mionca, cola_max_mionca_isla, cola_max_auto_isla = 0,0,0,0
     for i in range(cantidad_dias):
         ############# Parámetros de entrada
@@ -35,7 +35,7 @@ def generar_miles(cantidad_dias,lim_inf, lim_sup):
         prox_llegada_auto_cont = 7.5 + funcion_uniforme(rnd_llegada_auto_cont, 0.16, 0.33)
         trans_en_uso = "T1"
         hora_descarga_t1, hora_descarga_t2 = 999,999
-        dia = 1
+        dia += 1
         siguen_llegando_autos = True
         siguen_llegando_mionca = True
         fin_cargan_vehic_cont = 999
