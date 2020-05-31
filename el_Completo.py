@@ -996,5 +996,5 @@ def generar_miles(cantidad_dias,lim_inf, lim_sup):
         for j in range(len(tabla_completa[i])):
             print(tabla_completa[i][j].toString())
 
-generar_miles(10000,15,20)
+generar_miles(1000000,15,20)
 
