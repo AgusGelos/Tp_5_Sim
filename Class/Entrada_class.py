@@ -29,7 +29,10 @@ class Entrada:
                  rnd_carga_vehiculo_isla, tiempo_carga_isla, tiempo_final_isla, rnd_carga_auto_isla, tiempo_carga_auto_isla, tiempo_final_auto_isla ,
                  acum_paso_auto_isla, acum_paso_mionca_isla,
                  prom_paso_auto_isla, prom_paso_mionca_isla,
-                 ):
+                 #Estadisticas propias
+                 acum_auto_cont, prom_auto_cont,
+                 acum_camion_cont, prom_camion_cont,
+                 acum_vehic_isla, prom_vehic_isla):
         self.evento = evento
         self.dia = dia
         self.reloj = reloj
@@ -113,8 +116,17 @@ class Entrada:
         self.prom_paso_auto_isla = prom_paso_auto_isla
         self.prom_paso_mionca_isla = prom_paso_mionca_isla
 
+        ###########Estadisticas propias
+        self.acum_auto_cont = acum_auto_cont
+        self.prom_auto_cont = prom_auto_cont
+        self.acum_camion_cont = acum_camion_cont
+        self.prom_camion_cont = prom_camion_cont
+        self.acum_vehic_isla = acum_vehic_isla
+        self.prom_vehic_isla =prom_vehic_isla
+
+
     def toString(self):
-        return (self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
+        return (self.dia, self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
 
     def toStringIsla(self):
         return (self.cola_autos_isla,self.cola_mionca_isla)

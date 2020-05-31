@@ -10,19 +10,22 @@ from Class.Entrada_Cont_prueba import Entrada_prueba
 def funcion_uniforme(rnd,lim_inf, lim_sup):
     return lim_inf + rnd*(lim_sup-lim_inf)
 
-def generar_miles(cantidad_dias):
+def generar_miles(cantidad_dias,lim_inf, lim_sup):
 
     tabla_dia = []
     tabla_completa = []
+    aux = 0
 
-    t1 = Transbordador(0,0,10, 9, "Libre", "Continente", 0,99,"Continente")
+    t1 = Transbordador(0,0,10, 9, "Libre", "Continente", 5,99,"Continente")
     t2 = Transbordador(0,0,20, 10, "Libre", "Continente", 10,99,"Continente")
+    autos_totales_cont = 0
+    camiones_totales_cont = 0
+    vehic_totales_isla = 0
 
     cola_max_auto, cola_max_mionca, cola_max_mionca_isla, cola_max_auto_isla = 0,0,0,0
     for i in range(cantidad_dias):
         ############# Parámetros de entrada
-        if i != 0:
-            tabla_completa.append(tabla_dia)
+
         tabla_dia = []
         reloj = 7
         evento = "Inicio del Día"
@@ -91,10 +94,10 @@ def generar_miles(cantidad_dias):
             acum_auto_isla = 0
             acum_mionca_isla = 0
         else:
-            acum_auto = tabla_completa[-1][-1].acum_paso_auto
-            acum_mionca = tabla_completa[-1][-1].acum_paso_mionca
-            acum_auto_isla = tabla_completa[-1][-1].acum_paso_auto_isla
-            acum_mionca_isla = tabla_completa[-1][-1].acum_paso_mionca_isla
+            acum_auto = aux[-1].acum_paso_auto
+            acum_mionca = aux[-1].acum_paso_mionca
+            acum_auto_isla = aux[-1].acum_paso_auto_isla
+            acum_mionca_isla = aux[-1].acum_paso_mionca_isla
 
         corta = False
         #########################################################   CICLO     ###################################################
@@ -103,7 +106,6 @@ def generar_miles(cantidad_dias):
             cola_esp_man_mionca = 0
             cola_esp_man_mionca_acum= 0
             cola_esp_man_auto_acum = 0
-
             t_fin_cargan_auto_isla, t_fin_cargan_vehic_cont, t_fin_cargan_vehic_isla, t_fin_cargan_auto_cont = 0,0,0,0
             rnd_llegada_auto_cont = 0
             rnd_llegada_mionca_cont = 0
@@ -120,10 +122,10 @@ def generar_miles(cantidad_dias):
             ############################################## COLA DE AYER ##########################################
 
             if (len(tabla_completa) != 0) and reloj == 7:
-                cola_autos = tabla_completa[-1][-1].cola_esp_man_auto
-                cola_mionca = tabla_completa[-1][-1].cola_esp_man_mionca
-                cola_autos_isla = tabla_completa[-1][-1].cola_esp_man_auto_isla
-                cola_mionca_isla = tabla_completa[-1][-1].cola_esp_man_mionca_isla
+                cola_autos = aux[-1].cola_esp_man_auto - t1.cola_autos - t2.cola_autos
+                cola_mionca = aux[-1].cola_esp_man_mionca - t1.cola_autos - t2.cola_autos
+                cola_autos_isla = aux[-1].cola_esp_man_auto_isla
+                cola_mionca_isla = aux[-1].cola_esp_man_mionca_isla
                 ##Prox Carga de vehículo:
 
                 if cola_mionca > 0 and hora_fin_matenimiento_t1 == 999:
@@ -234,6 +236,7 @@ def generar_miles(cantidad_dias):
                             rnd_carga_auto_cont = random.uniform(0, 1)
                             t_fin_cargan_vehic_cont = funcion_uniforme(rnd_carga_auto_cont, 0.017, 0.049)
                             fin_cargan_auto_cont = reloj + t_fin_cargan_vehic_cont
+
                 #################################################### FIN DE CARGA MIONCA CONT #################################
                 elif opcion == fin_cargan_vehic_cont:
                     reloj = fin_cargan_vehic_cont
@@ -341,13 +344,11 @@ def generar_miles(cantidad_dias):
                         elif t2.capacidad == 0:
                             t2.hora_partida = reloj +0.01
 
-
-
             ########################## LLEGADA DE AUTO AL CONTINENTE ##############################
                 elif opcion == prox_llegada_auto_cont:
                     ## Llega un auto
                     evento = "Llegada de Auto a Continente"
-
+                    autos_totales_cont += 1
                     reloj = prox_llegada_auto_cont
                     cola_autos += 1
                     pasa = False
@@ -399,6 +400,7 @@ def generar_miles(cantidad_dias):
                 elif opcion == prox_llegada_mionca_cont:
                     evento = "Llegada de Camión/Ómnibus a Continente"
                     reloj = prox_llegada_mionca_cont
+                    camiones_totales_cont += 1
                     cola_mionca += 1
                     pasa = False
                     if reloj <= 11 and siguen_llegando_mionca:
@@ -491,7 +493,7 @@ def generar_miles(cantidad_dias):
             ################################# SALE EL SEGUNDO FERRY #######################################
                 elif opcion == t2.hora_partida:
 
-                    if t2.hora_partida >= 20 and t2.localizacion == "Contiente":
+                    if t2.hora_partida >= 20 and t2.localizacion == "Continente":
                         t2.hora_partida = 999
                     else:
                         if t2.estado == "Cargando":
@@ -563,9 +565,6 @@ def generar_miles(cantidad_dias):
                         if t2.localizacion != "Isla":
                             trans_en_uso_isla = "T1"
                     t1.hora_llegada = 999
-
-
-
 
                 #############Llegada de ferry 2 al continente###########
                 elif opcion == t2.hora_llegada:
@@ -653,7 +652,6 @@ def generar_miles(cantidad_dias):
                         else:
                             t1.estado = "Libre"
                             fin_cargan_vehic_isla = 999
-
 
                 ######################## FIN Descarga T2 ######################################
                 elif opcion == hora_descarga_t2:
@@ -821,6 +819,7 @@ def generar_miles(cantidad_dias):
                 elif opcion == prox_llegada_auto_isla:
                     ## Llega un auto
                     evento = "Llegada de Auto a Isla"
+                    vehic_totales_isla += 1
 
                     reloj = prox_llegada_auto_isla
                     cola_autos_isla += 1
@@ -872,6 +871,7 @@ def generar_miles(cantidad_dias):
                     evento = "Llegada de Camión/Ómnibus a Isla"
                     reloj = prox_llegada_mionca_isla
                     cola_mionca_isla += 1
+                    vehic_totales_isla += 1
                     pasa = False
                     if reloj <= 18 and siguen_llegando_mionca_isla:
                         rnd_llegada_mionca_isla = random.uniform(0, 1)
@@ -911,7 +911,6 @@ def generar_miles(cantidad_dias):
                     except:
                         cola_max_mionca_isla = cola_mionca_isla
 
-
                 ##################################### FIN DEL DÍA ############################
                 elif opcion == fin_del_dia:
                     evento = "Esperando Fin"
@@ -935,10 +934,12 @@ def generar_miles(cantidad_dias):
 
                         cola_esp_man_auto = cola_autos + t1.cola_autos + t2.cola_autos
                         cola_esp_man_mionca = cola_max_mionca + t1.cola_mionca + t2.cola_mionca
+                        cola_esp_man_auto_isla = cola_autos_isla
+                        cola_esp_man_mionca_isla = cola_mionca_isla
                         corta = True
                         try:
-                            cola_esp_man_auto_acum = tabla_dia[-1].cola_esp_man_auto_acum + cola_esp_man_auto
-                            cola_esp_man_mionca_acum = tabla_dia[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
+                            cola_esp_man_auto_acum = aux[-1].cola_esp_man_auto_acum + cola_esp_man_auto
+                            cola_esp_man_mionca_acum = aux[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
                         except:
                             cola_esp_man_auto_acum = cola_esp_man_auto
                             cola_esp_man_mionca_acum = cola_esp_man_mionca
@@ -965,14 +966,30 @@ def generar_miles(cantidad_dias):
             cola_autos_isla,cola_mionca_isla,cola_max_auto_isla,cola_max_mionca_isla,cola_esp_man_auto_isla,cola_esp_man_mionca_isla,
             cola_esp_man_auto_acum_isla, cola_esp_man_mionca_acum_isla,cola_esp_man_auto_acum_isla/dia,cola_esp_man_mionca_acum_isla/dia,
                               ##Colas de carga
-            rnd_carga_mionca_isla,t_fin_cargan_vehic_isla,fin_cargan_vehic_isla,rnd_carga_auto_isla,t_fin_cargan_auto_isla, fin_cargan_auto_isla,acum_auto_isla,acum_mionca_isla,acum_auto_isla/dia, acum_mionca_isla/dia
+            rnd_carga_mionca_isla,t_fin_cargan_vehic_isla,fin_cargan_vehic_isla,rnd_carga_auto_isla,t_fin_cargan_auto_isla, fin_cargan_auto_isla,acum_auto_isla,acum_mionca_isla,acum_auto_isla/dia, acum_mionca_isla/dia,
+                              autos_totales_cont, autos_totales_cont/dia, camiones_totales_cont, camiones_totales_cont/dia, vehic_totales_isla, vehic_totales_isla/dia
             )
-            tabla_dia.append(entrada)
-            primero = True
-            print(entrada.toString(),trans_en_uso, t1.capacidad,t2.capacidad,"--Cola t1---" ,t1.cola_autos ,t1.cola_mionca,"-- Colas t2--",t2.cola_autos, t2.cola_mionca)
-            print(entrada.toStringIsla())
+            if len(tabla_dia)!=0:
+                if entrada.reloj != tabla_dia[-1].reloj:
+                    tabla_dia.append(entrada)
+                    primero = True
+                    #print(entrada.toString(),trans_en_uso, t1.capacidad,t2.capacidad,"--Cola t1---" ,t1.cola_autos ,t1.cola_mionca,"-- Colas t2--",t2.cola_autos, t2.cola_mionca)
+                    #print(entrada.toStringIsla())
+            else:
+                tabla_dia.append(entrada)
+                primero = True
+
             if corta:
                 break
 
+        aux = tabla_dia
+        if i < 5 or (i> lim_inf and i<lim_sup) or (i> cantidad_dias-5):
+            tabla_completa.append(tabla_dia)
 
-generar_miles(1)
+    print(len(tabla_completa))
+    for i in range(len(tabla_completa)):
+        for j in range(len(tabla_completa[i])):
+            print(tabla_completa[i][j].toString())
+
+generar_miles(10000,15,20)
+
