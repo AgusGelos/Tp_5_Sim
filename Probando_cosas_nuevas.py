@@ -53,6 +53,8 @@ def cargar_mionca(reloj, t1, cola_mionca):
     return rnd_carga_mionca_cont,t_fin_cargan_vehic_cont, fin_cargan_mionca_cont,  cola_mionca,t1
 
 def generar_miles(cantidad_dias):
+    autos_totales_cont, camiones_totales_cont = 0,0
+    vehic_totales_isla = 0
 
     tabla_dia = []
     tabla_completa = []
@@ -714,30 +716,38 @@ def generar_miles(cantidad_dias):
                             cola_esp_man_auto_acum = cola_esp_man_auto
                             cola_esp_man_mionca_acum = cola_esp_man_mionca
 
-
-
             entrada = Entrada(evento, dia, reloj,
-            # Llegada continente
-            rnd_llegada_auto_cont, prox_llegada_auto_cont, rnd_llegada_mionca_cont, prox_llegada_mionca_cont,
-            # Colas cont
-            cola_autos, cola_mionca,
-            # Colas Max
-            cola_max_auto, cola_max_mionca,
-            # Flags Espera a mañana cont
+                              # Llegada continente
+                              rnd_llegada_auto_cont, prox_llegada_auto_cont, rnd_llegada_mionca_cont,
+                              prox_llegada_mionca_cont,
+                              # Colas cont
+                              cola_autos, cola_mionca,
+                              # Colas Max
+                              cola_max_auto, cola_max_mionca,
+                              # Flags Espera a mañana cont
 
-            cola_esp_man_auto, cola_esp_man_mionca, cola_esp_man_auto_acum,
-            cola_esp_man_mionca_acum, cola_esp_man_auto_acum/dia, cola_esp_man_mionca_acum/dia,
-            # Carga cont
-            rnd_carga_mionca_cont, t_fin_cargan_vehic_cont, fin_cargan_vehic_cont,rnd_carga_auto_cont,t_fin_cargan_auto_cont,fin_cargan_auto_cont, t1, t2, acum_auto, acum_mionca,
-            acum_auto/dia, acum_mionca/dia,
-            ############# PARAM ISLA #########################
-            rnd_llegada_auto_isla,prox_llegada_auto_isla,rnd_llegada_mionca_isla,prox_llegada_mionca_isla,
-            ###Colas
-            cola_autos_isla,cola_mionca_isla,cola_max_auto_isla,cola_max_mionca_isla,cola_esp_man_auto_isla,cola_esp_man_mionca_isla,
-            cola_esp_man_auto_acum_isla, cola_esp_man_mionca_acum_isla,cola_esp_man_auto_acum_isla/dia,cola_esp_man_mionca_acum_isla/dia,
+                              cola_esp_man_auto, cola_esp_man_mionca, cola_esp_man_auto_acum,
+                              cola_esp_man_mionca_acum, cola_esp_man_auto_acum / dia, cola_esp_man_mionca_acum / dia,
+                              # Carga cont
+                              rnd_carga_mionca_cont, t_fin_cargan_vehic_cont, fin_cargan_vehic_cont,
+                              rnd_carga_auto_cont, t_fin_cargan_auto_cont, fin_cargan_auto_cont, t1, t2, acum_auto,
+                              acum_mionca,
+                              acum_auto / dia, acum_mionca / dia,
+                              ############# PARAM ISLA #########################
+                              rnd_llegada_auto_isla, prox_llegada_auto_isla, rnd_llegada_mionca_isla,
+                              prox_llegada_mionca_isla,
+                              ###Colas
+                              cola_autos_isla, cola_mionca_isla, cola_max_auto_isla, cola_max_mionca_isla,
+                              cola_esp_man_auto_isla, cola_esp_man_mionca_isla,
+                              cola_esp_man_auto_acum_isla, cola_esp_man_mionca_acum_isla,
+                              cola_esp_man_auto_acum_isla / dia, cola_esp_man_mionca_acum_isla / dia,
                               ##Colas de carga
-            rnd_carga_mionca_isla,t_fin_cargan_vehic_isla,fin_cargan_vehic_isla,rnd_carga_auto_isla,t_fin_cargan_auto_isla, fin_cargan_auto_isla,acum_auto_isla,acum_mionca_isla,acum_auto_isla/dia, acum_mionca_isla/dia
-            )
+                              rnd_carga_mionca_isla, t_fin_cargan_vehic_isla, fin_cargan_vehic_isla,
+                              rnd_carga_auto_isla, t_fin_cargan_auto_isla, fin_cargan_auto_isla, acum_auto_isla,
+                              acum_mionca_isla, acum_auto_isla / dia, acum_mionca_isla / dia,
+                              autos_totales_cont, autos_totales_cont / dia, camiones_totales_cont,
+                              camiones_totales_cont / dia, vehic_totales_isla, vehic_totales_isla / dia
+                              )
             tabla_dia.append(entrada)
             primero = True
             print(entrada.toString(),trans_en_uso, t1.capacidad,t2.capacidad,"--Cola t1---" ,t1.cola_autos ,t1.cola_mionca,"-- Colas t2--",t2.cola_autos, t2.cola_mionca)

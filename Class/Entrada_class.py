@@ -11,7 +11,13 @@ class Entrada:
                  cola_esp_man_mionca_acum,cola_esp_man_auto_prom,cola_esp_man_mionca_prom,
                  #Carga cont
 
-                 rnd_carga_vehiculo, tiempo_carga,tiempo_final,rnd_carga_auto, tiempo_carga_auto,tiempo_final_auto , t1,t2, acum_paso_auto, acum_paso_mionca,
+                 rnd_carga_vehiculo, tiempo_carga,tiempo_final,rnd_carga_auto, tiempo_carga_auto,tiempo_final_auto ,
+                 ##Datos Trans
+
+                t1_cola_autos, t1_cola_mionca,t1_hora_partida, t1_estado, t1_localizacion,
+                t2_cola_autos, t2_cola_mionca, t2_hora_partida, t2_estado, t2_localizacion,
+
+                 acum_paso_auto, acum_paso_mionca,
                  prom_paso_auto,prom_paso_mionca,
                  ###############Isla####################
                  #Llegada
@@ -69,8 +75,17 @@ class Entrada:
         self.tiempo_carga_auto = tiempo_carga_auto
         self.tiempo_final_auto = tiempo_final_auto
         #Transbordadores
-        self.t1 = t1
-        self.t2 = t2
+        self.t1_cola_autos = t1_cola_autos
+        self.t1_cola_mionca = t1_cola_mionca
+        self.t1_hora_partida = t1_hora_partida
+        self.t1_estado = t1_estado
+        self.t1_localizacion = t1_localizacion
+
+        self.t2_cola_autos = t2_cola_autos
+        self.t2_cola_mionca = t2_cola_mionca
+        self.t2_hora_partida = t2_hora_partida
+        self.t2_estado = t2_estado
+        self.t2_localizacion = t2_localizacion
         #Contadores de Continente a Isla
         self.acum_paso_auto = acum_paso_auto
         self.acum_paso_mionca = acum_paso_mionca
@@ -126,8 +141,7 @@ class Entrada:
 
 
     def toString(self):
-        return (self.dia, self.reloj,self.evento,self.cola_autos_cont, self.cola_mionca_cont)
+        return (self.dia, self.reloj,self.evento,self.t1.estado, self.t2.estado)
 
     def toStringIsla(self):
         return (self.cola_autos_isla,self.cola_mionca_isla)
-
