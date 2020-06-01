@@ -8,7 +8,7 @@ class Entrada:
                  cola_max_auto_cont, cola_max_mionca_cont,
                  #Flags Espera a mañana cont
                  cola_esp_man_auto, cola_esp_man_mionca,cola_esp_man_auto_acum,
-                 cola_esp_man_mionca_acum,cola_esp_man_auto_prom,cola_esp_man_mionca_prom,
+                 cola_esp_man_mionca_acum,cola_esp_man_auto_prom,cola_esp_man_mionca_prom,cola_esp_man_total,
                  #Carga cont
 
                  rnd_carga_vehiculo, tiempo_carga,tiempo_final,rnd_carga_auto, tiempo_carga_auto,tiempo_final_auto ,
@@ -65,7 +65,7 @@ class Entrada:
         self.cola_esp_man_mionca_acum = cola_esp_man_mionca_acum
         self.cola_esp_man_auto_prom = cola_esp_man_auto_prom
         self.cola_esp_man_mionca_prom = cola_esp_man_mionca_prom
-        self.cola_esp_man_total = (cola_esp_man_auto_prom + cola_esp_man_mionca_prom)/2
+        self.cola_esp_man_total = cola_esp_man_total
         #Carga de vehículos cont
         #self.flag_esta_cargando = flag_esta_cargando
         self.rnd_carga_vehiculo = rnd_carga_vehiculo

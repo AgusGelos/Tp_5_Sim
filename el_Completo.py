@@ -14,7 +14,13 @@ def funcion_uniforme(rnd, lim_inf, lim_sup):
 def generar_miles(cantidad_dias, lim_inf, lim_sup):
     tabla_dia = []
     tabla_completa = []
+    entry_aux = 0
+    cola_esp_man_auto_acum = 0
+    cola_esp_man_mionca_acum = 0
+    cola_esp_man_total = 0
 
+    cola_esp_man_auto_acum_isla = 0
+    cola_esp_man_mionca_acum_isla = 0
 
     t1 = Transbordador(0, 0, 10, 9, "Libre", "Continente", 5, 99, "Continente")
     t2 = Transbordador(0, 0, 20, 10, "Libre", "Continente", 10, 99, "Continente")
@@ -93,18 +99,19 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
             acum_auto_isla = 0
             acum_mionca_isla = 0
         else:
-            acum_auto = aux[-1].acum_paso_auto
-            acum_mionca = aux[-1].acum_paso_mionca
-            acum_auto_isla = aux[-1].acum_paso_auto_isla
-            acum_mionca_isla = aux[-1].acum_paso_mionca_isla
+            acum_auto = entry_aux.acum_paso_auto
+            acum_mionca = entry_aux.acum_paso_mionca
+            acum_auto_isla = entry_aux.acum_paso_auto_isla
+            acum_mionca_isla = entry_aux.acum_paso_mionca_isla
 
         corta = False
         #########################################################   CICLO     ###################################################
         while reloj != 20:
             cola_esp_man_auto = 0
             cola_esp_man_mionca = 0
-            cola_esp_man_mionca_acum = 0
-            cola_esp_man_auto_acum = 0
+
+
+
             t_fin_cargan_auto_isla, t_fin_cargan_vehic_cont, t_fin_cargan_vehic_isla, t_fin_cargan_auto_cont = 0, 0, 0, 0
             rnd_llegada_auto_cont = 0
             rnd_llegada_mionca_cont = 0
@@ -112,8 +119,6 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
             ############################################## param ISLA ##################################+
             cola_esp_man_auto_isla = 0
             cola_esp_man_mionca_isla = 0
-            cola_esp_man_mionca_acum_isla = 0
-            cola_esp_man_auto_acum_isla = 0
             t_fin_cargan_vehic_isla = 0
             rnd_llegada_auto_isla = 0
             rnd_llegada_mionca_isla = 0
@@ -125,6 +130,10 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                 cola_mionca = aux[-1].cola_esp_man_mionca - aux[-1].t1_cola_autos - aux[-1].t2_cola_autos
                 cola_autos_isla = aux[-1].cola_esp_man_auto_isla
                 cola_mionca_isla = aux[-1].cola_esp_man_mionca_isla
+                cola_max_auto = aux[-1].cola_max_autos_cont
+                cola_max_mionca = aux[-1].cola_max_mionca_cont
+                cola_max_auto_isla= aux[-1].cola_max_autos_cont
+                cola_max_mionca_isla = aux[-1].cola_max_mionca_isla
                 ##Prox Carga de vehículo:
 
                 if cola_mionca > 0 and hora_fin_matenimiento_t1 == 999:
@@ -384,13 +393,11 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         t_fin_cargan_auto_cont = + funcion_uniforme(rnd_carga_auto_cont, 0.017, 0.049)
                         fin_cargan_auto_cont = reloj + t_fin_cargan_auto_cont
 
-                    try:
-                        if (aux.cola_max_auto_cont) <= cola_autos:
-                            cola_max_auto = cola_autos
-                        else:
-                            cola_max_auto = aux.cola_max_auto_cont
-                    except:
+
+                    if (cola_max_auto) <= cola_autos:
                         cola_max_auto = cola_autos
+
+
 
 
                 ################################### LLEGADA DE CAMION ####################################
@@ -432,12 +439,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                     if pasa:
                         rnd_carga_mionca_cont = random.uniform(0, 1)
                         fin_cargan_vehic_cont = reloj + funcion_uniforme(rnd_carga_mionca_cont, 0.05, 0.082)
-                    try:
-                        if (aux.cola_max_mionca_cont) < cola_mionca:
-                            cola_max_mionca = cola_mionca
-                        else:
-                            cola_max_mionca = aux.cola_max_mionca_cont
-                    except:
+
+                    if cola_max_mionca <= cola_mionca:
                         cola_max_mionca = cola_mionca
 
                 ############################### PARTE EL FERRY CHU CHUUU######################pame la pija#############
@@ -854,12 +857,7 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         t_fin_cargan_auto_isla = + funcion_uniforme(rnd_carga_auto_isla, 0.017, 0.049)
                         fin_cargan_auto_isla = reloj + t_fin_cargan_auto_isla
 
-                    try:
-                        if (aux.cola_max_auto_isla) < cola_autos_isla:
-                            cola_max_auto_isla = cola_autos_isla
-                        else:
-                            cola_max_auto_isla = aux.cola_max_auto_isla
-                    except:
+                    if cola_max_auto_isla <= cola_autos_isla:
                         cola_max_auto_isla = cola_autos_isla
 
                     ################################### LLEGADA DE CAMION Isla ####################################
@@ -899,13 +897,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         rnd_carga_mionca_isla = random.uniform(0, 1)
                         fin_cargan_vehic_isla = reloj + funcion_uniforme(rnd_carga_mionca_isla, 0.05, 0.082)
 
-                    try:
-                        if (aux.cola_max_mionca_isla) < cola_mionca_isla:
-                            cola_max_mionca_isla = cola_mionca_isla
-                        else:
-                            cola_max_mionca_isla = aux.cola_max_mionca_isla
-                    except:
-                        cola_max_mionca_isla = cola_mionca_isla
+                    if cola_max_mionca_isla <= cola_autos_isla:
+                        cola_max_mionca_isla = cola_autos_isla
 
                 ##################################### FIN DEL DÍA ############################
                 elif opcion == fin_del_dia:
@@ -918,6 +911,10 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         fin_del_dia += 0.3
                     elif t2.localizacion != "Continente":
                         fin_del_dia += 0.3
+                    elif t2.estado == "Descargando":
+                        fin_del_dia += 0.3
+                    elif t1.estado == "Descargando":
+                        fin_del_dia += 0.3
                     elif fin_cargan_auto_cont != 999:
                         fin_del_dia += 0.2
                     elif fin_cargan_vehic_cont != 999:
@@ -929,16 +926,18 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         reloj = fin_del_dia
 
                         cola_esp_man_auto = cola_autos + t1.cola_autos + t2.cola_autos
-                        cola_esp_man_mionca = cola_max_mionca + t1.cola_mionca + t2.cola_mionca
+                        cola_esp_man_mionca = cola_mionca + t1.cola_mionca + t2.cola_mionca
                         cola_esp_man_auto_isla = cola_autos_isla
                         cola_esp_man_mionca_isla = cola_mionca_isla
                         corta = True
-                        try:
-                            cola_esp_man_auto_acum = aux[-1].cola_esp_man_auto_acum + cola_esp_man_auto
-                            cola_esp_man_mionca_acum = aux[-1].cola_esp_man_mionca_acum + cola_esp_man_mionca
-                        except:
-                            cola_esp_man_auto_acum = cola_esp_man_auto
-                            cola_esp_man_mionca_acum = cola_esp_man_mionca
+                        if dia == 1:
+                            cola_esp_man_auto_acum = cola_esp_man_auto_acum + cola_esp_man_auto
+                            cola_esp_man_mionca_acum = cola_esp_man_mionca_acum + cola_esp_man_mionca
+                        else:
+                            cola_esp_man_auto_acum = entry_aux.cola_esp_man_auto_acum + cola_esp_man_auto
+                            cola_esp_man_mionca_acum = entry_aux.cola_esp_man_mionca_acum + cola_esp_man_mionca
+
+
 
             entrada = Entrada(evento, dia, reloj,
                               # Llegada continente
@@ -952,6 +951,7 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
 
                               cola_esp_man_auto, cola_esp_man_mionca, cola_esp_man_auto_acum,
                               cola_esp_man_mionca_acum, cola_esp_man_auto_acum / dia, cola_esp_man_mionca_acum / dia,
+                              ( (cola_esp_man_auto_acum+cola_esp_man_mionca_acum)/dia),
                               # Carga cont
                               rnd_carga_mionca_cont, t_fin_cargan_vehic_cont, fin_cargan_vehic_cont,
                               rnd_carga_auto_cont, t_fin_cargan_auto_cont, fin_cargan_auto_cont,
@@ -992,9 +992,11 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
             if corta:
                 break
 
+        entry_aux = entrada
         aux = tabla_dia
         if dia >= lim_inf and dia <= lim_sup:
             tabla_completa.append(tabla_dia)
+
 
 
     entradas = [[entrada for entrada in tabladia] for tabladia in tabla_completa]
@@ -1077,11 +1079,15 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                        'E. ACI': [entrada.acum_vehic_isla for sublist in entradas for entrada in sublist],
                        'E. PCI': [entrada.prom_vehic_isla for sublist in entradas for entrada in sublist],
                        })
+
     return df
     # print(len(tabla_completa))
     # for i in range(len(tabla_completa)):
     #     for j in range(len(tabla_completa[i])):
     #         print(tabla_completa[i][j].toString())
     #
+
+
+#generar_miles(10,0,5)
 
 
