@@ -95,7 +95,7 @@ class Entrada:
         #Llegada vehículos a la isla
         self.rnd_llegada_auto_isla = rnd_llegada_auto_isla
         self.prox_llegada_auto_isla = prox_llegada_auto_isla
-        self.rnd_llegada_mionca_cont = rnd_llegada_mionca_isla
+        self.rnd_llegada_mionca_isla = rnd_llegada_mionca_isla
         self.prox_llegada_mionca_isla = prox_llegada_mionca_isla
         #self.tipo_vehiculo_isla = tipo_vehiculo_isla
         #self.flag_espera_auto_isla = flag_espera_auto_isla
