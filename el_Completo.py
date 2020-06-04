@@ -127,12 +127,12 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
 
             if (len(tabla_completa) != 0) and reloj == 7:
                 cola_autos = aux[-1].cola_esp_man_auto - aux[-1].t1_cola_autos - aux[-1].t2_cola_autos
-                cola_mionca = aux[-1].cola_esp_man_mionca - aux[-1].t1_cola_autos - aux[-1].t2_cola_autos
+                cola_mionca = aux[-1].cola_esp_man_mionca - aux[-1].t1_cola_mionca - aux[-1].t2_cola_mionca
                 cola_autos_isla = aux[-1].cola_esp_man_auto_isla
                 cola_mionca_isla = aux[-1].cola_esp_man_mionca_isla
                 cola_max_auto = aux[-1].cola_max_autos_cont
                 cola_max_mionca = aux[-1].cola_max_mionca_cont
-                cola_max_auto_isla= aux[-1].cola_max_autos_cont
+                cola_max_auto_isla= aux[-1].cola_max_auto_isla
                 cola_max_mionca_isla = aux[-1].cola_max_mionca_isla
                 ##Prox Carga de vehículo:
 
@@ -897,8 +897,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                         rnd_carga_mionca_isla = random.uniform(0, 1)
                         fin_cargan_vehic_isla = reloj + funcion_uniforme(rnd_carga_mionca_isla, 0.05, 0.082)
 
-                    if cola_max_mionca_isla <= cola_autos_isla:
-                        cola_max_mionca_isla = cola_autos_isla
+                    if cola_max_mionca_isla <= cola_mionca_isla:
+                        cola_max_mionca_isla = cola_mionca_isla
 
                 ##################################### FIN DEL DÍA ############################
                 elif opcion == fin_del_dia:
