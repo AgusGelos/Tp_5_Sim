@@ -37,9 +37,11 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
         reloj = 7
         evento = "Inicio del Día"
         rnd_llegada_mionca_cont = random.uniform(0, 1)
-        prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.28, 0.38)
+        t_mionca = funcion_uniforme(rnd_llegada_mionca_cont, 0.28, 0.38)
+        prox_llegada_mionca_cont = reloj + t_mionca
         rnd_llegada_auto_cont = random.uniform(0, 1)
-        prox_llegada_auto_cont = 7.5 + funcion_uniforme(rnd_llegada_auto_cont, 0.16, 0.33)
+        t_auto = funcion_uniforme(rnd_llegada_auto_cont, 0.16, 0.33)
+        prox_llegada_auto_cont = 7.5 + t_auto
         trans_en_uso = "T1"
         hora_descarga_t1, hora_descarga_t2 = 9999, 9999
         dia += 1
@@ -111,7 +113,7 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
             cola_esp_man_mionca = 0
 
 
-
+            t_t1,t_t2, t_auto,t_mionca,t_auto_isla,t_mionca_isla = 0,0,0,0,0,0
             t_fin_cargan_auto_isla, t_fin_cargan_vehic_cont, t_fin_cargan_vehic_isla, t_fin_cargan_auto_cont = 0, 0, 0, 0
             rnd_llegada_auto_cont = 0
             rnd_llegada_mionca_cont = 0
@@ -132,7 +134,7 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                 cola_mionca_isla = aux[-1].cola_esp_man_mionca_isla
                 cola_max_auto = aux[-1].cola_max_autos_cont
                 cola_max_mionca = aux[-1].cola_max_mionca_cont
-                cola_max_auto_isla= aux[-1].cola_max_auto_isla
+                cola_max_auto_isla= aux[-1].cola_max_autos_isla
                 cola_max_mionca_isla = aux[-1].cola_max_mionca_isla
                 ##Prox Carga de vehículo:
 
@@ -361,10 +363,12 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                     pasa = False
                     if reloj <= 12 and siguen_llegando_autos:
                         rnd_llegada_auto_cont = random.uniform(0, 1)
-                        prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont, 0.167, 0.33)
+                        t_auto = funcion_uniforme(rnd_llegada_auto_cont, 0.167, 0.33)
+                        prox_llegada_auto_cont = reloj + t_auto
                     elif reloj <= 19 and siguen_llegando_autos:
                         rnd_llegada_auto_cont = random.uniform(0, 1)
-                        prox_llegada_auto_cont = reloj + funcion_uniforme(rnd_llegada_auto_cont, 0.417, 0.583)
+                        t_auto = funcion_uniforme(rnd_llegada_auto_cont, 0.417, 0.583)
+                        prox_llegada_auto_cont = reloj + t_auto
                     else:
                         siguen_llegando_autos = False
                         prox_llegada_auto_cont = 999
@@ -410,10 +414,12 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                     pasa = False
                     if reloj <= 11 and siguen_llegando_mionca:
                         rnd_llegada_mionca_cont = random.uniform(0, 1)
-                        prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 0.314, 0.346)
+                        t_mionca = funcion_uniforme(rnd_llegada_mionca_cont, 0.314, 0.346)
+                        prox_llegada_mionca_cont = reloj + t_mionca
                     elif reloj <= 19.5 and siguen_llegando_mionca:
                         rnd_llegada_mionca_cont = random.uniform(0, 1)
-                        prox_llegada_mionca_cont = reloj + funcion_uniforme(rnd_llegada_mionca_cont, 1.917, 2.083)
+                        t_mionca = funcion_uniforme(rnd_llegada_mionca_cont, 1.917, 2.083)
+                        prox_llegada_mionca_cont = reloj + t_mionca
                     else:
                         siguen_llegando_mionca = False
                         prox_llegada_mionca_cont = 999
@@ -473,7 +479,9 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                                     trans_en_uso = "T2"
                                 else:
                                     trans_en_uso = "T3"
-                                t1.hora_llegada = reloj + random.uniform(0.917, 1.084)
+
+                                t_t1 = random.uniform(0.917, 1.084)
+                                t1.hora_llegada = reloj + t_t1
                                 t1.puerto_salida = t1.localizacion
                                 t1.localizacion = "Mar"
                                 t1.hora_partida = t1.hora_llegada + 1
@@ -485,8 +493,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                                     trans_en_uso_isla = "T2"
                                 else:
                                     trans_en_uso_isla = "T3"
-
-                                t1.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                                t_t1 = random.uniform(0.917, 1.084)
+                                t1.hora_llegada = reloj + t_t1
                                 t1.puerto_salida = t1.localizacion
                                 t1.localizacion = "Mar"
 
@@ -518,7 +526,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                                     trans_en_uso = "T1"
                                 else:
                                     trans_en_uso = "T3"
-                                t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                                t_t2 = random.uniform(0.917, 1.084)
+                                t2.hora_llegada = reloj + t_t2
                                 t2.puerto_salida = t2.localizacion
                                 t2.localizacion = "Mar"
                                 t2.hora_partida = t2.hora_llegada + 1
@@ -531,7 +540,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                                 else:
                                     trans_en_uso_isla = "T3"
 
-                                t2.hora_llegada = reloj + random.uniform(0.917, 1.084)
+                                t_t2 = random.uniform(0.917, 1.084)
+                                t2.hora_llegada = reloj + t_t2
                                 t2.puerto_salida = t2.localizacion
                                 t2.localizacion = "Mar"
                                 t2.hora_partida = t2.hora_llegada + 1
@@ -827,7 +837,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                     pasa = False
                     if reloj <= 18 and siguen_llegando_autos_isla:
                         rnd_llegada_auto_isla = random.uniform(0, 1)
-                        prox_llegada_auto_isla = reloj + funcion_uniforme(rnd_llegada_auto_isla, 0.1167, 0.2833)
+                        t_auto_isla = funcion_uniforme(rnd_llegada_auto_isla, 0.1167, 0.2833)
+                        prox_llegada_auto_isla = reloj + t_auto_isla
 
                     else:
                         siguen_llegando_autos = False
@@ -870,7 +881,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                     pasa = False
                     if reloj <= 18 and siguen_llegando_mionca_isla:
                         rnd_llegada_mionca_isla = random.uniform(0, 1)
-                        prox_llegada_mionca_isla = reloj + funcion_uniforme(rnd_llegada_mionca_isla, 0.5, 1.5)
+                        t_mionca_isla = funcion_uniforme(rnd_llegada_mionca_isla, 0.5, 1.5)
+                        prox_llegada_mionca_isla = reloj + t_mionca_isla
                     else:
                         siguen_llegando_mionca_isla = False
                         prox_llegada_mionca_isla = 999
@@ -976,7 +988,8 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                               rnd_carga_auto_isla, t_fin_cargan_auto_isla, fin_cargan_auto_isla, acum_auto_isla,
                               acum_mionca_isla, acum_auto_isla / dia, acum_mionca_isla / dia,
                               autos_totales_cont, autos_totales_cont / dia, camiones_totales_cont,
-                              camiones_totales_cont / dia, vehic_totales_isla, vehic_totales_isla / dia
+                              camiones_totales_cont / dia, vehic_totales_isla, vehic_totales_isla / dia,
+                              t_t1,t_t2,t_auto,t_mionca,t_auto_isla, t_mionca_isla
                               )
             primero = True
             if len(tabla_dia) != 0:
@@ -1006,11 +1019,13 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
 
     df = pd.DataFrame({'Evento': [entrada.evento for sublist in entradas for entrada in sublist],
                        'Dia': [entrada.dia for sublist in entradas for entrada in sublist],
-                       'Reloj': [entrada.reloj for sublist in entradas for entrada in sublist],
-                       'RND llegada A cont' :  [entrada.rnd_llegada_auto_cont if entrada.rnd_llegada_auto_cont != 999 else 0 for sublist in entradas for entrada in sublist],
-                       'Prox llegada A cont': [entrada.prox_llegada_auto_cont for sublist in entradas for entrada in sublist],
-                       'RND llegada C cont': [entrada.rnd_llegada_mionca_cont for sublist in entradas for entrada in sublist],
-                       'Prox llegada C cont': [entrada.prox_llegada_mionca_cont for sublist in entradas for entrada in sublist],
+                       'Reloj': [round(entrada.reloj,2) for sublist in entradas for entrada in sublist],
+                       'RND llegada A cont' :  [round(entrada.rnd_llegada_auto_cont,2) if entrada.rnd_llegada_auto_cont != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'T llegada A cont': [round(entrada.t_auto, 2) for sublist in entradas for entrada in sublist],
+                       'Prox llegada A cont': [round(entrada.prox_llegada_auto_cont,2)  if entrada.prox_llegada_auto_cont != 999 else 0for sublist in entradas for entrada in sublist],
+                       'RND llegada C cont': [round(entrada.rnd_llegada_mionca_cont,2) for sublist in entradas for entrada in sublist],
+                       'T llegada C cont': [round(entrada.t_mionca, 2) for sublist in entradas for entrada in sublist],
+                       'Prox llegada C cont': [round(entrada.prox_llegada_mionca_cont,2) if entrada.prox_llegada_mionca_cont != 999 else 0 for sublist in entradas for entrada in sublist],
                        'C. Auto': [entrada.cola_autos_cont for sublist in entradas for entrada in sublist],
                        'C. Camion': [entrada.cola_mionca_cont for sublist in entradas for entrada in sublist],
                        'Max Auto': [entrada.cola_max_autos_cont for sublist in entradas for entrada in sublist],
@@ -1022,35 +1037,39 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                        'EA. Camion': [entrada.cola_esp_man_mionca_acum for sublist in entradas for entrada in sublist],
                        'EAP. Camion': [entrada.cola_esp_man_mionca_prom for sublist in entradas for entrada in sublist],
                        'Total cont': [entrada.cola_esp_man_total for sublist in entradas for entrada in sublist],
-                       'RND Carga camion': [entrada.rnd_carga_vehiculo for sublist in entradas for entrada in sublist],
-                       'T. Carga camion': [entrada.tiempo_carga_vehic for sublist in entradas for entrada in sublist],
-                       'T. Final camion': [entrada.tiempo_final_vehic for sublist in entradas for entrada in sublist],
-                       'RND Carga auto': [entrada.rnd_carga_auto for sublist in entradas for entrada in sublist],
-                       'T. Carga auto': [entrada.tiempo_carga_auto for sublist in entradas for entrada in sublist],
-                       'T. Final auto': [entrada.tiempo_final_auto for sublist in entradas for entrada in sublist],
+                       'RND Carga camion': [round(entrada.rnd_carga_vehiculo,2) for sublist in entradas for entrada in sublist],
+                       'T. Carga camion': [round(entrada.tiempo_carga_vehic,2) for sublist in entradas for entrada in sublist],
+                       'T. Final camion': [round(entrada.tiempo_final_vehic,2)  if entrada.tiempo_final_vehic != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'RND Carga auto': [round(entrada.rnd_carga_auto,2) for sublist in entradas for entrada in sublist],
+                       'T. Carga auto': [round(entrada.tiempo_carga_auto,2) for sublist in entradas for entrada in sublist],
+                       'T. Final auto': [round(entrada.tiempo_final_auto,2)  if entrada.tiempo_final_auto != 999 else 0 for sublist in entradas for entrada in sublist],
                        'Cola auto T1': [entrada.t1_cola_autos for sublist in entradas for entrada in sublist],
                        'Cola camion T1': [entrada.t1_cola_mionca for sublist in entradas for entrada in sublist],
-                       'Hora partida T1': [entrada.t1_hora_partida for sublist in entradas for entrada in sublist],
+                       'T Partida T1': [round(entrada.t_t1, 2) for sublist in entradas for entrada in sublist],
+                       'Hora partida T1': [round(entrada.t1_hora_partida,2)  if entrada.t1_hora_partida != 999 else 0 for sublist in entradas for entrada in sublist],
                        'Estado T1': [entrada.t1_estado for sublist in entradas for entrada in sublist],
                        'Localizacion T1': [entrada.t1_localizacion for sublist in entradas for entrada in sublist],
                        'Cola auto T2': [entrada.t2_cola_autos for sublist in entradas for entrada in sublist],
                        'Cola camion T2': [entrada.t2_cola_mionca for sublist in entradas for entrada in sublist],
-                       'Hora partida T2': [entrada.t2_hora_partida for sublist in entradas for entrada in sublist],
+                       'T Partida T2': [round(entrada.t_t2, 2) for sublist in entradas for entrada in sublist],
+                       'Hora partida T2': [round(entrada.t2_hora_partida,2) if entrada.t2_hora_partida != 999 else 0 for sublist in entradas for entrada in sublist],
                        'Estado T2': [entrada.t2_estado for sublist in entradas for entrada in sublist],
                        'Localizacion T2': [entrada.t2_localizacion for sublist in entradas for entrada in sublist],
                        'A. Auto': [entrada.acum_paso_auto for sublist in entradas for entrada in sublist],
-                       'Prom Auto': [entrada.prom_paso_auto for sublist in entradas for entrada in sublist],
+                       'Prom Auto': [round(entrada.prom_paso_auto,2) for sublist in entradas for entrada in sublist],
                        'A. Camion': [entrada.acum_paso_mionca for sublist in entradas for entrada in sublist],
-                       'Prom. Camion': [entrada.prom_paso_mionca for sublist in entradas for entrada in sublist],
-                       'RND llegada C isla':[entrada.rnd_llegada_mionca_isla for sublist in entradas for entrada in sublist],
-                       'Prox llegada C isla': [entrada.prox_llegada_mionca_isla for sublist in entradas for entrada in sublist],
-                       'RND llegada A isla': [entrada.rnd_llegada_auto_isla for sublist in entradas for entrada in
+                       'Prom. Camion': [round(entrada.prom_paso_mionca,2) for sublist in entradas for entrada in sublist],
+                       'RND llegada C isla':[round(entrada.rnd_llegada_mionca_isla,2) for sublist in entradas for entrada in sublist],
+                       'T llegada C Isla': [round(entrada.t_mionca_isla, 2) for sublist in entradas for entrada in sublist],
+                       'Prox llegada C isla': [round(entrada.prox_llegada_mionca_isla)  if entrada.prox_llegada_mionca_isla != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'RND llegada A isla': [round(entrada.rnd_llegada_auto_isla,2) for sublist in entradas for entrada in
                                               sublist],
-                       'Prox llegada A isla': [entrada.prox_llegada_auto_isla for sublist in entradas for entrada in sublist],
-                       'Cola auto': [entrada.cola_autos_isla for sublist in entradas for entrada in sublist],
-                       'Cola camion': [entrada.cola_mionca_isla for sublist in entradas for entrada in sublist],
-                       'Max auto': [entrada.cola_max_autos_isla for sublist in entradas for entrada in sublist],
-                       'Max camion': [entrada.cola_max_mionca_isla for sublist in entradas for entrada in sublist],
+                       'T llegada A Isla': [round(entrada.t_auto_isla, 2) for sublist in entradas for entrada in sublist],
+                       'Prox llegada A isla': [round(entrada.prox_llegada_auto_isla,2)  if entrada.prox_llegada_auto_isla != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'Cola auto Isla': [entrada.cola_autos_isla for sublist in entradas for entrada in sublist],
+                       'Cola camion Isla': [entrada.cola_mionca_isla for sublist in entradas for entrada in sublist],
+                       'Max auto Isla': [entrada.cola_max_autos_isla for sublist in entradas for entrada in sublist],
+                       'Max camion Isla': [entrada.cola_max_mionca_isla for sublist in entradas for entrada in sublist],
                        'EM auto': [entrada.cola_esp_man_auto_isla for sublist in entradas for entrada in sublist],
                        'EMA auto': [entrada.cola_esp_man_auto_acum_isla for sublist in entradas for entrada in sublist],
                        'EMP auto': [entrada.cola_esp_man_auto_prom_isla for sublist in entradas for entrada in sublist],
@@ -1060,17 +1079,17 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
                        'EMP camion': [entrada.cola_esp_man_mionca_prom_isla for sublist in entradas for entrada in
                                       sublist],
                        'Total isla': [entrada.cola_esp_man_total_isla for sublist in entradas for entrada in sublist],
-                       'RND T. Carga C isla': [entrada.rnd_carga_vehiculo_isla for sublist in entradas for entrada in sublist],
-                       'T. Carga C': [entrada.tiempo_carga_isla for sublist in entradas for entrada in sublist],
-                       'T. Final C': [entrada.tiempo_final_vehic_isla for sublist in entradas for entrada in sublist],
-                       'RND T. Carga A isla': [entrada.rnd_carga_auto_isla for sublist in entradas for entrada in
+                       'RND T. Carga C isla': [round(entrada.rnd_carga_vehiculo_isla,2) for sublist in entradas for entrada in sublist],
+                       'T. Carga C': [round(entrada.tiempo_carga_isla,2)  if entrada.tiempo_carga_isla != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'T. Final C': [round(entrada.tiempo_final_vehic_isla,2)  if entrada.tiempo_final_vehic_isla != 999 else 0 for sublist in entradas for entrada in sublist],
+                       'RND T. Carga A isla': [round(entrada.rnd_carga_auto_isla,2) for sublist in entradas for entrada in
                                                sublist],
-                       'T. Carga A': [entrada.tiempo_carga_auto_isla for sublist in entradas for entrada in sublist],
-                       'T. Final A': [entrada.tiempo_final_auto_isla for sublist in entradas for entrada in sublist],
+                       'T. Carga A': [round(entrada.tiempo_carga_auto_isla,2) for sublist in entradas for entrada in sublist],
+                       'T. Final A': [round(entrada.tiempo_final_auto_isla,2)  if entrada.tiempo_final_auto_isla != 999 else 0 for sublist in entradas for entrada in sublist],
                        'Acum Autos': [entrada.acum_paso_auto_isla for sublist in entradas for entrada in sublist],
-                       'Prom Autos': [entrada.prom_paso_auto_isla for sublist in entradas for entrada in sublist],
+                       'Prom Autos': [round(entrada.prom_paso_auto_isla,2) for sublist in entradas for entrada in sublist],
                        'Acum Camiones': [entrada.acum_paso_mionca_isla for sublist in entradas for entrada in sublist],
-                       'Prom Camiones': [entrada.prom_paso_mionca_isla for sublist in entradas for entrada in sublist],
+                       'Prom Camiones': [round(entrada.prom_paso_mionca_isla,2) for sublist in entradas for entrada in sublist],
                        'E. AAC': [entrada.acum_auto_cont for sublist in entradas for entrada in sublist],
                        'E. PAC': [entrada.prom_auto_cont for sublist in entradas for entrada in sublist],
                        'E. ACC': [entrada.acum_camion_cont for sublist in entradas for entrada in sublist],
@@ -1088,6 +1107,6 @@ def generar_miles(cantidad_dias, lim_inf, lim_sup):
     # print(df)
 
 
-# generar_miles(10,0,5)
+#generar_miles(10,0,5)
 
 

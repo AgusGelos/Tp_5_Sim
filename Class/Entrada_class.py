@@ -38,7 +38,10 @@ class Entrada:
                  #Estadisticas propias
                  acum_auto_cont, prom_auto_cont,
                  acum_camion_cont, prom_camion_cont,
-                 acum_vehic_isla, prom_vehic_isla):
+                 acum_vehic_isla, prom_vehic_isla,
+                 #Tiempos agregados al final
+                 t_t1,t_t2,t_auto,t_mionca, t_auto_isla, t_mionca_isla
+                ):
         self.evento = evento
         self.dia = dia
         self.reloj = reloj
@@ -138,6 +141,14 @@ class Entrada:
         self.prom_camion_cont = prom_camion_cont
         self.acum_vehic_isla = acum_vehic_isla
         self.prom_vehic_isla =prom_vehic_isla
+
+        ############# Tiempos del final
+        self.t_t1 = t_t1
+        self.t_t2 = t_t2
+        self.t_auto = t_auto
+        self.t_mionca = t_mionca
+        self.t_auto_isla = t_auto_isla
+        self.t_mionca_isla = t_mionca_isla
 
 
     def toString(self):
