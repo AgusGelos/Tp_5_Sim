@@ -17,8 +17,10 @@ class Entrada:
                 t1_cola_autos, t1_cola_mionca,t1_hora_partida, t1_estado, t1_localizacion,
                 t2_cola_autos, t2_cola_mionca, t2_hora_partida, t2_estado, t2_localizacion,
 
-                 acum_paso_auto, acum_paso_mionca,
-                 prom_paso_auto,prom_paso_mionca,
+                 acum_paso_auto_ci, acum_paso_mionca_ci,
+                 prom_paso_auto_ci,prom_paso_mionca_ci,
+                 acum_paso_auto_ic, acum_paso_mionca_ic,
+                 prom_paso_auto_ic, prom_paso_mionca_ic,
                  ###############Isla####################
                  #Llegada
                  rnd_llegada_auto_isla, prox_llegada_auto_isla,rnd_llegada_mionca_isla, prox_llegada_mionca_isla,
@@ -90,10 +92,14 @@ class Entrada:
         self.t2_estado = t2_estado
         self.t2_localizacion = t2_localizacion
         #Contadores de Continente a Isla
-        self.acum_paso_auto = acum_paso_auto
-        self.acum_paso_mionca = acum_paso_mionca
-        self.prom_paso_auto =prom_paso_auto
-        self.prom_paso_mionca = prom_paso_mionca
+        self.acum_paso_auto = acum_paso_auto_ci
+        self.acum_paso_mionca = acum_paso_mionca_ci
+        self.prom_paso_auto =prom_paso_auto_ci
+        self.prom_paso_mionca = prom_paso_mionca_ci
+        self.acum_paso_auto_ic = acum_paso_auto_ic
+        self.acum_paso_mionca_ic = acum_paso_mionca_ic
+        self.prom_paso_auto_ic = prom_paso_auto_ic
+        self.prom_paso_mionca_ic = prom_paso_mionca_ic
         #######################ISLA##########################
         #Llegada vehículos a la isla
         self.rnd_llegada_auto_isla = rnd_llegada_auto_isla
