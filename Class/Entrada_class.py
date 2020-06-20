@@ -42,7 +42,7 @@ class Entrada:
                  acum_camion_cont, prom_camion_cont,
                  acum_vehic_isla, prom_vehic_isla,
                  #Tiempos agregados al final
-                 t_t1,t_t2,t_auto,t_mionca, t_auto_isla, t_mionca_isla
+                 t_t1,t_t2,t_auto,t_mionca, t_auto_isla, t_mionca_isla, rnd_purgo, hora_fin_purga
                 ):
         self.evento = evento
         self.dia = dia
@@ -155,6 +155,11 @@ class Entrada:
         self.t_mionca = t_mionca
         self.t_auto_isla = t_auto_isla
         self.t_mionca_isla = t_mionca_isla
+
+
+        ###TP 6
+        self.rnd_purgo = rnd_purgo
+        self.hora_fin_purga = hora_fin_purga
 
 
     def toString(self):
