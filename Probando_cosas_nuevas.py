@@ -756,7 +756,7 @@ def generar_miles(cantidad_dias):
                 break
 
 
-generar_miles(1)
+#generar_miles(1)
 
 
 

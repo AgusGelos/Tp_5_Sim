@@ -42,8 +42,25 @@ class Entrada:
                  acum_camion_cont, prom_camion_cont,
                  acum_vehic_isla, prom_vehic_isla,
                  #Tiempos agregados al final
-                 t_t1,t_t2,t_auto,t_mionca, t_auto_isla, t_mionca_isla, rnd_purgo, hora_fin_purga
+                 t_t1,t_t2,t_auto,t_mionca, t_auto_isla, t_mionca_isla,
+                 rnd_purga, tiempo_purga, fin_purga,
+                 hora_descarga_t1_lequeda, hora_fin_matenimiento_t1_lequeda, fin_cargan_vehic_cont_lequeda,fin_cargan_auto_cont_lequeda,
+                fin_cargan_auto_islalequeda, fin_cargan_vehic_islalequeda,
+                 hora_llegada_lequeda, hora_partida_lequeda
                 ):
+
+
+        self.hora_llegada_lequeda = hora_llegada_lequeda
+        self.hora_partida_lequeda = hora_partida_lequeda
+        self.fin_cargan_auto_cont_lequeda = fin_cargan_auto_cont_lequeda
+        self.fin_cargan_vehic_cont_lequeda = fin_cargan_vehic_cont_lequeda
+        self.hora_fin_matenimiento_t1_lequeda = hora_fin_matenimiento_t1_lequeda
+        self.hora_descarga_t1_lequeda = hora_descarga_t1_lequeda
+        self.fin_cargan_auto_islalequeda = fin_cargan_auto_islalequeda
+        self.fin_cargan_vehic_islalequeda = fin_cargan_vehic_islalequeda
+        self.rnd_purga = rnd_purga
+        self.tiempo_purga = tiempo_purga
+        self.fin_purga = fin_purga
         self.evento = evento
         self.dia = dia
         self.reloj = reloj
@@ -157,13 +174,17 @@ class Entrada:
         self.t_mionca_isla = t_mionca_isla
 
 
-        ###TP 6
-        self.rnd_purgo = rnd_purgo
-        self.hora_fin_purga = hora_fin_purga
-
-
     def toString(self):
         return (self.dia, self.reloj,self.evento,self.t1.estado, self.t2.estado)
 
     def toStringIsla(self):
         return (self.cola_autos_isla,self.cola_mionca_isla)
+
+    def getMax(self):
+        arreglo = [self.fin_cargan_vehic_cont_lequeda,self.fin_cargan_auto_cont_lequeda, self.fin_cargan_auto_islalequeda,self.fin_cargan_vehic_islalequeda]
+        i = 0
+        while(i < len(arreglo)):
+            if arreglo[i] != 0:
+                return arreglo[i]
+            i += 1
+        return 0

@@ -9,6 +9,8 @@ class Transbordador:
         self.mantenimiento = mantenimiento
         self.hora_llegada = hora_llegada
         self.puerto_salida = salio_de
+        self.hora_partida_lequeda = 0
+        self.hora_llegada_lequeda = 0
 
     def set_estado(self, estado):
         self.estado = estado
